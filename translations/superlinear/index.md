@@ -2,12 +2,14 @@
 title: 超线性回报（Superlinear Returns）
 date: 2023-10-01
 category: 译文
+tags: [PaulGraham, 译文]
 description: Paul Graham 探讨为什么表现带来的回报往往是超线性的，以及指数级增长与阈值如何塑造我们的世界。
 ---
 
 # 超线性回报（Superlinear Returns）
 
 > 原文：[Superlinear Returns](https://www.paulgraham.com/superlinear.html) · 作者：Paul Graham（2023 年 10 月） · [查看英文原版](./en.md)
+> 标签：#创业 #复利 #思维模型
 
 小时候，我对这个世界最大的误解之一，就是没搞懂“表现带来的回报”究竟在多大程度上是超线性的。
 
