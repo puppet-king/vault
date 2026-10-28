@@ -12,8 +12,9 @@ import { works } from './.vitepress/theme/works.mjs'
 
 <div class="vp-works-grid">
   <div v-for="item in works" :key="item.name" class="vp-work-card">
-    <img :src="item.qrcode" :alt="item.name" class="vp-work-qr" />
+    <img :src="item.qrcode" :alt="item.fullName || item.name" class="vp-work-qr" />
     <div class="vp-work-name">{{ item.name }}</div>
+    <div v-if="item.fullName" class="vp-work-fullname">{{ item.fullName }}</div>
     <div v-if="item.desc" class="vp-work-desc">{{ item.desc }}</div>
   </div>
 </div>
