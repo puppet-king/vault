@@ -6,7 +6,8 @@
     "fetch": "node scripts/fetch.mjs",
     "dev": "vitepress dev --open=false",
     "build": "vitepress build",
-    "preview": "vitepress preview"
+    "preview": "vitepress preview",
+    "deploy": "node scripts/deploy.mjs"
   },
   "devDependencies": {
     "markdown-it-mathjax3": "^4.3.2",

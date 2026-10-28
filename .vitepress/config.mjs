@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { defineConfig, createContentLoader } from 'vitepress';
 
-const SITE_URL = 'https://github.com/puppet-king/vault';
+const SITE_URL = 'https://docs.juqingsong.cn';
 
 async function generateRss(outDir) {
   const posts = await createContentLoader(['posts/**/*.md', 'translations/**/index.md'], {

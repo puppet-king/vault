@@ -2,5 +2,11 @@ node_modules/
 .vitepress/dist/
 .vitepress/cache/
 .idea/
+.deploy/
+.env
+.env.*
+!.env.example
+*.pem
+*.key
 .DS_Store
 *.log
