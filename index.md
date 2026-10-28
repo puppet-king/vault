@@ -56,7 +56,7 @@ const filteredPosts = computed(() =>
       color: activeTag === tag.name ? '#fff' : 'var(--vp-c-text-1)'
     }"
   >
-    #{{ tag.name }} ({{ tag.count }})
+    {{ tag.name }} ({{ tag.count }})
   </button>
 </div>
 
@@ -72,7 +72,7 @@ const filteredPosts = computed(() =>
       @click="activeTag = tag"
       style="font-size: 0.8em; padding: 0.1em 0.45em; border-radius: 4px; background: var(--vp-c-bg-soft); margin-left: 0.4em; cursor: pointer; color: var(--vp-c-brand-1);"
     >
-      #{{ tag }}
+      {{ tag }}
     </span>
     <p v-if="post.description" style="margin: 0.25em 0 0; color: var(--vp-c-text-2); font-size: 0.92em;">{{ post.description }}</p>
   </li>
