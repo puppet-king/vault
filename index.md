@@ -66,6 +66,9 @@ const filteredPosts = computed(() =>
   <li v-for="post in filteredPosts" :key="post.url" style="margin-bottom: 1.25em;">
     <span style="color: var(--vp-c-text-2); font-family: monospace; margin-right: 0.75em;">{{ post.date }}</span>
     <a :href="post.url" style="font-weight: 600;">{{ post.title }}</a>
+    <span style="color: var(--vp-c-text-3); font-size: 0.82em; margin-left: 0.6em;">
+      {{ post.words }} 字 · 约 {{ post.readingTime }} 分钟
+    </span>
     <span
       v-for="tag in post.tags"
       :key="tag"

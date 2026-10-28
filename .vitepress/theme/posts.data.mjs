@@ -1,6 +1,7 @@
 import { createContentLoader } from 'vitepress';
 
 const INLINE_TAG_RE = /(?<=^|\s)#([\u4e00-\u9fa5][\u4e00-\u9fa5\w-]*|[a-zA-Z][\w-]*)/gm;
+const WORD_RE = /[\u4e00-\u9fa5]|[a-zA-Z0-9]+/g;
 
 export default createContentLoader(['posts/**/*.md', 'translations/**/index.md'], {
   includeSrc: true,
@@ -14,12 +15,18 @@ export default createContentLoader(['posts/**/*.md', 'translations/**/index.md']
         const fmTags = Array.isArray(frontmatter.tags) ? frontmatter.tags.map(String) : [];
         const tags = [...new Set([...fmTags, ...inlineTags])];
 
+        const plain = body.replace(/<[^>]+>|\[([^\]]+)\]\([^)]+\)|[#*>_`~-]/g, '$1');
+        const words = (plain.match(WORD_RE) || []).length;
+        const readingTime = Math.max(1, Math.ceil(words / 350));
+
         return {
           title: frontmatter.title || url,
           url,
           date: frontmatter.date ? new Date(frontmatter.date).toISOString().slice(0, 10) : '',
           category: frontmatter.category || '随笔',
           tags,
+          words,
+          readingTime,
           description: frontmatter.description || ''
         };
       })
