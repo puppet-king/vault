@@ -23,3 +23,90 @@
   padding: 0.75em 1.25em;
   border-left: 3px solid var(--vp-c-brand-1);
 }
+
+/* 顶部阅读进度条 */
+.vp-reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--vp-c-brand-1), var(--vp-c-brand-2));
+  z-index: 9999;
+  transition: width 0.08s ease-out;
+  pointer-events: none;
+}
+
+/* 荧光笔高亮 (==重点==) */
+.vp-doc mark.vp-mark {
+  color: inherit;
+  padding: 0.1em 0.25em;
+  margin: 0 0.05em;
+  border-radius: 4px;
+  background-color: transparent;
+  background-image: linear-gradient(120deg, rgba(250, 204, 21, 0.45) 0%, rgba(250, 204, 21, 0.45) 100%);
+  background-repeat: no-repeat;
+  background-size: 100% 85%;
+  background-position: 0 90%;
+}
+
+.dark .vp-doc mark.vp-mark {
+  background-image: linear-gradient(120deg, rgba(234, 179, 8, 0.35) 0%, rgba(234, 179, 8, 0.35) 100%);
+}
+
+/* 内链与注释悬浮预览卡片 */
+.vp-link-preview {
+  position: fixed;
+  z-index: 9998;
+  max-width: 380px;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  background: var(--vp-c-bg-elv);
+  border: 1px solid var(--vp-c-divider);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.14);
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--vp-c-text-1);
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.vp-link-preview.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.vp-link-preview-title {
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+  color: var(--vp-c-brand-1);
+}
+
+/* 代码块折叠 */
+.vp-doc div[class*="language-"].is-collapsed {
+  max-height: 220px;
+  overflow: hidden;
+}
+
+.vp-code-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0.4rem 0;
+  font-size: 12px;
+  color: var(--vp-c-text-2);
+  background: linear-gradient(180deg, transparent, var(--vp-code-block-bg) 45%);
+  border: none;
+  cursor: pointer;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 3;
+}
+
+.vp-code-toggle:hover {
+  color: var(--vp-c-brand-1);
+}
