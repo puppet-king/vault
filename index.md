@@ -5,6 +5,7 @@ title: 首页
 <script setup>
 import { ref, computed } from 'vue'
 import { data as posts } from './.vitepress/theme/posts.data.mjs'
+import { works } from './.vitepress/theme/works.mjs'
 
 const activeTag = ref('')
 
@@ -80,3 +81,13 @@ const filteredPosts = computed(() =>
     <p v-if="post.description" style="margin: 0.25em 0 0; color: var(--vp-c-text-2); font-size: 0.92em;">{{ post.description }}</p>
   </li>
 </ul>
+
+## 我的作品
+
+<div class="vp-works-grid">
+  <div v-for="item in works" :key="item.name" class="vp-work-card">
+    <img :src="item.qrcode" :alt="item.name" class="vp-work-qr" />
+    <div class="vp-work-name">{{ item.name }}</div>
+    <div v-if="item.desc" class="vp-work-desc">{{ item.desc }}</div>
+  </div>
+</div>

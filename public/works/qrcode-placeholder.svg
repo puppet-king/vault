@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <rect width="200" height="200" rx="24" fill="#f4f5f7"/>
+  <circle cx="100" cy="100" r="68" fill="none" stroke="#07c160" stroke-width="4" stroke-dasharray="10 6"/>
+  <circle cx="100" cy="100" r="26" fill="#07c160" opacity="0.12"/>
+  <path d="M92 94a8 8 0 1 1 16 0v12a8 8 0 1 1-16 0V94z" fill="#07c160"/>
+  <text x="100" y="186" text-anchor="middle" font-size="12" fill="#888" font-family="sans-serif">放入小程序码至 public/works/</text>
+</svg>

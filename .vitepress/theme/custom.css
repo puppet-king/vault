@@ -110,3 +110,50 @@
 .vp-code-toggle:hover {
   color: var(--vp-c-brand-1);
 }
+
+/* 我的作品栏（小程序码 + 名字） */
+.vp-works-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
+  gap: 1.25rem;
+  margin-top: 1.25rem;
+}
+
+.vp-work-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.1rem 0.9rem;
+  border-radius: 12px;
+  background: var(--vp-c-bg-soft);
+  border: 1px solid var(--vp-c-divider);
+  text-align: center;
+  transition: transform 0.18s ease, border-color 0.18s ease;
+}
+
+.vp-work-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--vp-c-brand-1);
+}
+
+.vp-work-qr {
+  width: 132px;
+  height: 132px;
+  object-fit: contain;
+  border-radius: 10px;
+  background: #fff;
+  padding: 6px;
+}
+
+.vp-work-name {
+  margin-top: 0.7rem;
+  font-weight: 600;
+  font-size: 0.96rem;
+  color: var(--vp-c-text-1);
+}
+
+.vp-work-desc {
+  margin-top: 0.2rem;
+  font-size: 0.8rem;
+  color: var(--vp-c-text-2);
+}

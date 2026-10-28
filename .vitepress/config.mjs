@@ -73,6 +73,7 @@ export default defineConfig({
     nav: [
       { text: '首页', link: '/' },
       { text: '译文', link: '/translations/superlinear/' },
+      { text: '作品', link: '/works' },
       { text: '关于', link: '/about' },
       { text: 'RSS', link: '/rss.xml', target: '_blank' }
     ],
