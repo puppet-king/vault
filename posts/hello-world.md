@@ -1,0 +1,10 @@
+---
+title: 你好，Vault
+date: 2026-10-28
+category: 随笔
+description: 个人博客第一篇随笔，记录思考、技术与译文。
+---
+
+# 你好，Vault
+
+这是我的个人博客，使用 **VitePress** 与 **赫蹏（heti）** 搭建，存放日常随笔与外文精译。

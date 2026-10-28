@@ -1,0 +1,25 @@
+.vp-doc .heti {
+  max-width: 42em;
+  margin-inline: auto;
+  font-family: "Heti Hei", -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Source Han Sans SC", "Noto Sans CJK SC", sans-serif;
+  font-size: 17px;
+  line-height: 1.85;
+  letter-spacing: 0.03em;
+  line-break: strict;
+  word-break: normal;
+  overflow-wrap: break-word;
+  text-autospace: normal;
+}
+
+.vp-doc .heti p {
+  margin-block: 0.75em 1.25em;
+  line-height: 1.85;
+  text-align: justify;
+  text-justify: inter-ideograph;
+}
+
+.vp-doc .heti blockquote {
+  margin-inline: 0;
+  padding: 0.75em 1.25em;
+  border-left: 3px solid var(--vp-c-brand-1);
+}
