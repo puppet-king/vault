@@ -23,7 +23,7 @@ const filteredPosts = computed(() =>
 )
 </script>
 
-# Vault
+# 知识库
 
 记录思考、技术随笔与外文精译。
 

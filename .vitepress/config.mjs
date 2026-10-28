@@ -2,7 +2,7 @@ import { defineConfig } from 'vitepress';
 
 export default defineConfig({
   lang: 'zh-CN',
-  title: 'Vault',
+  title: '知识库',
   description: '个人博客 · 随笔与译文',
   themeConfig: {
     nav: [
