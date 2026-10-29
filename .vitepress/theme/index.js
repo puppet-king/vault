@@ -2,6 +2,7 @@ import DefaultTheme from 'vitepress/theme';
 import { onMounted, watch, nextTick } from 'vue';
 import { useRoute } from 'vitepress';
 import 'heti/umd/heti.min.css';
+import { data as posts } from './posts.data.mjs';
 import './custom.css';
 
 const WORD_RE = /[\u4e00-\u9fa5]|[a-zA-Z0-9]+/g;
@@ -18,18 +19,28 @@ export default {
       const bar = document.createElement('div');
       bar.className = 'vp-reading-progress';
       document.body.appendChild(bar);
-      window.addEventListener('scroll', () => {
-        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-        const pct = docHeight > 0 ? Math.min(100, (window.scrollY / docHeight) * 100) : 0;
-        bar.style.width = `${pct}%`;
-      }, { passive: true });
 
       // 2. 内链与文末注释悬浮预览卡片
       const popover = document.createElement('div');
       popover.className = 'vp-link-preview';
       document.body.appendChild(popover);
 
+      let activeAnchor = null;
       const pageCache = new Map();
+
+      const hidePopover = () => {
+        activeAnchor = null;
+        popover.classList.remove('is-visible');
+      };
+
+      window.addEventListener('scroll', () => {
+        hidePopover();
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const pct = docHeight > 0 ? Math.min(100, (window.scrollY / docHeight) * 100) : 0;
+        bar.style.width = `${pct}%`;
+      }, { passive: true });
+
+      document.addEventListener('click', hidePopover, true);
 
       const showPopover = (rect, title, body) => {
         popover.innerHTML = `${title ? `<div class="vp-link-preview-title">${title}</div>` : ''}<div>${body}</div>`;
@@ -43,6 +54,7 @@ export default {
       document.addEventListener('mouseover', async e => {
         const a = e.target.closest?.('.vp-doc a');
         if (!a) return;
+        activeAnchor = a;
         const href = a.getAttribute('href') || '';
         const rect = a.getBoundingClientRect();
 
@@ -58,7 +70,14 @@ export default {
         if (href.startsWith('/') || href.startsWith('./') || href.startsWith('../')) {
           if (href.endsWith('.xml')) return;
           try {
-            const url = new URL(href, window.location.href).href;
+            const urlObj = new URL(href, window.location.href);
+            const matchedPost = posts.find(p => p.url === urlObj.pathname || `${p.url}index.html` === urlObj.pathname);
+            if (matchedPost && matchedPost.description) {
+              showPopover(rect, matchedPost.title, matchedPost.description);
+              return;
+            }
+
+            const url = urlObj.href;
             if (!pageCache.has(url)) {
               const res = await fetch(url);
               const html = await res.text();
@@ -69,6 +88,7 @@ export default {
                 .find(t => t.length > 20) || '';
               pageCache.set(url, { title, excerpt: firstP.slice(0, 140) + (firstP.length > 140 ? '…' : '') });
             }
+            if (activeAnchor !== a) return;
             const info = pageCache.get(url);
             if (info?.excerpt) showPopover(rect, info.title, info.excerpt);
           } catch {}
@@ -76,13 +96,15 @@ export default {
       });
 
       document.addEventListener('mouseout', e => {
-        if (e.target.closest?.('.vp-doc a')) {
-          popover.classList.remove('is-visible');
+        const a = e.target.closest?.('.vp-doc a');
+        if (a && !a.contains(e.relatedTarget)) {
+          hidePopover();
         }
       });
     };
 
     const applyEnhance = async () => {
+      document.querySelector('.vp-link-preview')?.classList.remove('is-visible');
       await nextTick();
       setupProgressAndPreview();
 
