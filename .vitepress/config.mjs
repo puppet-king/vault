@@ -75,6 +75,7 @@ export default defineConfig({
       {
         text: '译文',
         items: [
+          { text: '品牌时代', link: '/translations/brandage/' },
           { text: '超线性回报', link: '/translations/superlinear/' },
           { text: '如何亏掉时间与金钱', link: '/translations/selfindulgence/' }
         ]

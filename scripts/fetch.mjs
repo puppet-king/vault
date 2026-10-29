@@ -5,14 +5,19 @@ const urls = process.argv.slice(2).length
   ? process.argv.slice(2)
   : [
       'https://www.paulgraham.com/superlinear.html',
-      'https://www.paulgraham.com/selfindulgence.html'
+      'https://www.paulgraham.com/selfindulgence.html',
+      'https://www.paulgraham.com/brandage.html'
     ];
 
 for (const url of urls) {
   const slug = path.basename(new URL(url).pathname, '.html');
   const res = await fetch(url);
   if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`);
-  const html = await res.text();
+  const buf = await res.arrayBuffer();
+  let html = new TextDecoder('utf-8').decode(buf);
+  if (html.includes('\uFFFD')) {
+    html = new TextDecoder('windows-1252').decode(buf);
+  }
 
   const titleMatch = html.match(/<title>([\s\S]*?)<\/title>/i);
   const title = titleMatch ? titleMatch[1].trim() : slug;
