@@ -1,7 +1,7 @@
 .vp-doc .heti {
   max-width: 42em;
   margin-inline: auto;
-  font-family: "Heti Hei", -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Source Han Sans SC", "Noto Sans CJK SC", sans-serif;
+  font-family: "Heti Hei SC", -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Source Han Sans SC", "Noto Sans CJK SC", sans-serif;
   font-size: 17px;
   line-height: 1.85;
   letter-spacing: 0.03em;
@@ -182,16 +182,15 @@
   border-color: var(--vp-c-brand-1);
 }
 
-/* 打印样式：仅打印文章内容区域，保留舒适页边距 */
+/* 打印样式：所见即所得，保留屏幕字体、颜色与背景高亮 */
 @page {
-  margin: 16mm 18mm;
+  margin: 15mm 16mm;
 }
 
 @media print {
-  html,
-  body {
-    background: #fff !important;
-    color: #111 !important;
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
   .VPNav,
@@ -219,24 +218,19 @@
   }
 
   .VPDoc .content-container {
-    max-width: 100% !important;
+    max-width: 42em !important;
     margin: 0 auto !important;
-    padding: 8mm 12mm !important;
+    padding: 4mm 6mm !important;
   }
 
-  .vp-doc .heti {
-    max-width: 100% !important;
-    margin: 0 !important;
-  }
-
-  .vp-doc h1,
-  .vp-doc h2,
-  .vp-doc h3,
-  .vp-doc p,
-  .vp-doc li,
-  .vp-doc blockquote {
-    color: #111 !important;
-    page-break-inside: avoid;
+  .vp-doc .heti,
+  .vp-doc .heti p,
+  .vp-doc .heti h1,
+  .vp-doc .heti h2,
+  .vp-doc .heti h3,
+  .vp-doc .heti blockquote,
+  .vp-doc .heti li {
+    font-family: "Heti Hei SC", -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Source Han Sans SC", "Noto Sans CJK SC", sans-serif !important;
   }
 
   .vp-doc div[class*="language-"].is-collapsed {
