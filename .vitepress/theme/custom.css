@@ -1,5 +1,10 @@
+.VPDoc.has-aside .content-container,
+.VPDoc .content-container {
+  max-width: 52em !important;
+}
+
 .vp-doc .heti {
-  max-width: 42em;
+  max-width: 52em;
   margin-inline: auto;
   font-family: "Heti Hei SC", -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Source Han Sans SC", "Noto Sans CJK SC", sans-serif;
   font-size: 17px;
@@ -184,7 +189,7 @@
 
 /* 打印样式：所见即所得，保留屏幕字体、颜色与背景高亮 */
 @page {
-  margin: 15mm 16mm;
+  margin: 15mm 8mm;
 }
 
 @media print {
@@ -218,15 +223,17 @@
   }
 
   .VPDoc .content-container {
-    max-width: 42em !important;
+    max-width: 100% !important;
     margin: 0 auto !important;
-    padding: 10mm 12mm !important;
+    padding: 10mm 4mm !important;
     -webkit-box-decoration-break: clone !important;
     box-decoration-break: clone !important;
   }
 
   .vp-doc .heti {
+    max-width: 100% !important;
     padding-block: 6mm !important;
+    padding-inline: 0 !important;
     -webkit-box-decoration-break: clone !important;
     box-decoration-break: clone !important;
   }
