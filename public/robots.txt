@@ -1,7 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /stats
-
-Sitemap: https://docs.juqingsong.cn/sitemap.xml
-# LLMs index: https://docs.juqingsong.cn/llms.txt
-# LLMs full content: https://docs.juqingsong.cn/llms-full.txt

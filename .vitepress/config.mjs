@@ -3,7 +3,13 @@ import path from 'node:path';
 import { defineConfig, createContentLoader } from 'vitepress';
 import { works } from './theme/works.mjs';
 
-const SITE_URL = 'https://docs.juqingsong.cn';
+try {
+  process.loadEnvFile('.env');
+} catch {}
+
+const SITE_URL = process.env.SITE_URL || 'https://example.com';
+const BAIDU_VERIFICATION = process.env.BAIDU_SITE_VERIFICATION || '';
+const ICP_NUMBER = process.env.ICP_NUMBER || '';
 const SITE_TITLE = 'puppet4105的知识库';
 const SITE_DESC = '个人知识库与博客，记录思考、技术随笔、外文精译与独立开发作品。';
 
@@ -114,7 +120,7 @@ export default defineConfig({
   head: [
     ['link', { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
     ['link', { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
-    ['meta', { name: 'baidu-site-verification', content: 'codeva-h8MuR7kqvH' }]
+    ...(BAIDU_VERIFICATION ? [['meta', { name: 'baidu-site-verification', content: BAIDU_VERIFICATION }]] : [])
   ],
   sitemap: {
     hostname: SITE_URL
@@ -178,8 +184,7 @@ export default defineConfig({
       label: '目录'
     },
     footer: {
-      message: '<a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">苏ICP备2024064653号</a>',
-      copyright: 'Copyright © 2026 puppet4105'
+      copyright: `©2026 puppet4105${ICP_NUMBER ? ` &nbsp;<a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">${ICP_NUMBER}</a>` : ''}`
     }
   },
   async buildEnd(siteConfig) {

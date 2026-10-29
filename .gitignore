@@ -10,3 +10,7 @@ node_modules/
 *.key
 .DS_Store
 *.log
+public/rss.xml
+public/robots.txt
+public/llms.txt
+public/llms-full.txt
