@@ -220,7 +220,15 @@
   .VPDoc .content-container {
     max-width: 42em !important;
     margin: 0 auto !important;
-    padding: 4mm 6mm !important;
+    padding: 10mm 12mm !important;
+    -webkit-box-decoration-break: clone !important;
+    box-decoration-break: clone !important;
+  }
+
+  .vp-doc .heti {
+    padding-block: 6mm !important;
+    -webkit-box-decoration-break: clone !important;
+    box-decoration-break: clone !important;
   }
 
   .vp-doc .heti,
