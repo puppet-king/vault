@@ -46,6 +46,7 @@ ${rssItems}
   // 2. 生成 robots.txt
   const robotsTxt = `User-agent: *
 Allow: /
+Disallow: /stats
 
 Sitemap: ${SITE_URL}/sitemap.xml
 # LLMs index: ${SITE_URL}/llms.txt
