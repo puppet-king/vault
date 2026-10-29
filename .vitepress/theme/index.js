@@ -113,7 +113,7 @@ export default {
             : `全篇约 ${words.toLocaleString()} 字 · 预计阅读 ${mins} 分钟`;
           const printBtn = document.createElement('button');
           printBtn.className = 'vp-print-btn';
-          printBtn.textContent = isEn ? 'Print / PDF' : '打印 / 导出 PDF';
+          printBtn.textContent = isEn ? 'Print' : '打印';
           printBtn.onclick = () => window.print();
           meta.append(textSpan, printBtn);
           h1.insertAdjacentElement('afterend', meta);
