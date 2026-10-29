@@ -6,7 +6,8 @@ const urls = process.argv.slice(2).length
   : [
       'https://www.paulgraham.com/superlinear.html',
       'https://www.paulgraham.com/selfindulgence.html',
-      'https://www.paulgraham.com/brandage.html'
+      'https://www.paulgraham.com/brandage.html',
+      'https://www.paulgraham.com/when.html'
     ];
 
 for (const url of urls) {
