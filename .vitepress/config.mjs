@@ -111,6 +111,10 @@ export default defineConfig({
   title: SITE_TITLE,
   description: '个人博客 · 随笔与译文',
   lastUpdated: true,
+  head: [
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
+    ['link', { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
+  ],
   sitemap: {
     hostname: SITE_URL
   },
@@ -132,6 +136,7 @@ export default defineConfig({
     }
   },
   themeConfig: {
+    logo: '/favicon.svg',
     nav: [
       { text: '首页', link: '/' },
       {
