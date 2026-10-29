@@ -176,6 +176,10 @@ export default defineConfig({
     outline: {
       level: [2, 3],
       label: '目录'
+    },
+    footer: {
+      message: '<a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">苏ICP备2024064653号</a>',
+      copyright: 'Copyright © 2026 puppet4105'
     }
   },
   async buildEnd(siteConfig) {
