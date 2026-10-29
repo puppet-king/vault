@@ -72,7 +72,13 @@ export default defineConfig({
   themeConfig: {
     nav: [
       { text: '首页', link: '/' },
-      { text: '译文', link: '/translations/superlinear/' },
+      {
+        text: '译文',
+        items: [
+          { text: '超线性回报', link: '/translations/superlinear/' },
+          { text: '如何亏掉时间与金钱', link: '/translations/selfindulgence/' }
+        ]
+      },
       { text: '作品', link: '/works' },
       { text: '关于', link: '/about' },
       { text: 'RSS', link: '/rss.xml', target: '_blank' }
