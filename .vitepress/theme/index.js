@@ -106,10 +106,16 @@ export default {
           const mins = Math.max(1, Math.ceil(words / (isEn ? 220 : 350)));
           const meta = document.createElement('div');
           meta.className = 'post-reading-meta';
-          meta.style.cssText = 'color: var(--vp-c-text-2); font-size: 0.88em; margin: -0.25em 0 1.25em;';
-          meta.textContent = isEn
+          meta.style.cssText = 'color: var(--vp-c-text-2); font-size: 0.88em; margin: -0.25em 0 1.25em; display: flex; align-items: center;';
+          const textSpan = document.createElement('span');
+          textSpan.textContent = isEn
             ? `${words.toLocaleString()} words · ~${mins} min read`
             : `全篇约 ${words.toLocaleString()} 字 · 预计阅读 ${mins} 分钟`;
+          const printBtn = document.createElement('button');
+          printBtn.className = 'vp-print-btn';
+          printBtn.textContent = isEn ? 'Print / PDF' : '打印 / 导出 PDF';
+          printBtn.onclick = () => window.print();
+          meta.append(textSpan, printBtn);
           h1.insertAdjacentElement('afterend', meta);
         }
       }
