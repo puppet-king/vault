@@ -31,7 +31,7 @@ async function generateRss(outDir) {
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
   <channel>
-    <title>知识库</title>
+    <title>puppet4105的知识库</title>
     <link>${SITE_URL}</link>
     <description>个人知识库 · 随笔与译文</description>
     <language>zh-CN</language>
@@ -49,7 +49,7 @@ generateRss(path.resolve('public')).catch(() => {});
 
 export default defineConfig({
   lang: 'zh-CN',
-  title: '知识库',
+  title: 'puppet4105的知识库',
   description: '个人博客 · 随笔与译文',
   lastUpdated: true,
   markdown: {
