@@ -1,18 +1,21 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { defineConfig, createContentLoader } from 'vitepress';
+import { works } from './theme/works.mjs';
 
 const SITE_URL = 'https://docs.juqingsong.cn';
+const SITE_TITLE = 'puppet4105的知识库';
+const SITE_DESC = '个人知识库与博客，记录思考、技术随笔、外文精译与独立开发作品。';
 
-async function generateRss(outDir) {
+async function generateMetaFiles(outDir) {
   const posts = await createContentLoader(['posts/**/*.md', 'translations/**/index.md'], {
-    excerpt: true,
-    render: true
+    includeSrc: true
   }).load();
 
   posts.sort((a, b) => new Date(b.frontmatter.date || 0) - new Date(a.frontmatter.date || 0));
 
-  const items = posts
+  // 1. 生成 rss.xml
+  const rssItems = posts
     .map(post => {
       const title = post.frontmatter.title || post.url;
       const link = `${SITE_URL}${post.url}`;
@@ -28,30 +31,88 @@ async function generateRss(outDir) {
     })
     .join('\n');
 
-  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+  const rssXml = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
   <channel>
-    <title>puppet4105的知识库</title>
+    <title>${SITE_TITLE}</title>
     <link>${SITE_URL}</link>
-    <description>个人知识库 · 随笔与译文</description>
+    <description>${SITE_DESC}</description>
     <language>zh-CN</language>
-${items}
+${rssItems}
   </channel>
 </rss>
 `;
 
+  // 2. 生成 robots.txt
+  const robotsTxt = `User-agent: *
+Allow: /
+
+Sitemap: ${SITE_URL}/sitemap.xml
+# LLMs index: ${SITE_URL}/llms.txt
+# LLMs full content: ${SITE_URL}/llms-full.txt
+`;
+
+  // 3. 生成 llms.txt（遵循 llmstxt.org 规范）
+  const postListMd = posts
+    .map(post => {
+      const title = post.frontmatter.title || post.url;
+      const link = `${SITE_URL}${post.url}`;
+      const desc = post.frontmatter.description ? `: ${post.frontmatter.description}` : '';
+      return `- [${title}](${link})${desc}`;
+    })
+    .join('\n');
+
+  const worksListMd = works
+    .map(w => `- **${w.name}${w.fullName ? `（${w.fullName}）` : ''}**: ${w.desc || ''}`)
+    .join('\n');
+
+  const llmsTxt = `# ${SITE_TITLE}
+
+> ${SITE_DESC}
+
+- [全量知识库正文 (llms-full.txt)](${SITE_URL}/llms-full.txt): 包含本站所有文章与译文的完整 Markdown 正文
+
+## 文章与译文
+
+${postListMd}
+
+## 我的作品（微信小程序）
+
+${worksListMd}
+`;
+
+  // 4. 生成 llms-full.txt（全站文章完整 Markdown 聚合）
+  const fullSections = posts
+    .map(post => {
+      const title = post.frontmatter.title || post.url;
+      const link = `${SITE_URL}${post.url}`;
+      const body = (post.src || '').replace(/^---[\s\S]*?---\s*/, '').trim();
+      return `================================================================================\nURL: ${link}\nTITLE: ${title}\n================================================================================\n\n${body}`;
+    })
+    .join('\n\n\n');
+
+  const llmsFullTxt = `# ${SITE_TITLE} - Full Content\n\n> ${SITE_DESC}\n\n${fullSections}\n`;
+
   await fs.mkdir(outDir, { recursive: true });
-  await fs.writeFile(path.join(outDir, 'rss.xml'), xml, 'utf8');
+  await Promise.all([
+    fs.writeFile(path.join(outDir, 'rss.xml'), rssXml, 'utf8'),
+    fs.writeFile(path.join(outDir, 'robots.txt'), robotsTxt, 'utf8'),
+    fs.writeFile(path.join(outDir, 'llms.txt'), llmsTxt, 'utf8'),
+    fs.writeFile(path.join(outDir, 'llms-full.txt'), llmsFullTxt, 'utf8')
+  ]);
 }
 
-// 预生成一份到 public/rss.xml，方便 dev 模式下直接访问 /rss.xml
-generateRss(path.resolve('public')).catch(() => {});
+// 预生成到 public/ 目录，方便本地 dev 模式下也能直接访问
+generateMetaFiles(path.resolve('public')).catch(() => {});
 
 export default defineConfig({
   lang: 'zh-CN',
-  title: 'puppet4105的知识库',
+  title: SITE_TITLE,
   description: '个人博客 · 随笔与译文',
   lastUpdated: true,
+  sitemap: {
+    hostname: SITE_URL
+  },
   markdown: {
     math: true,
     config(md) {
@@ -111,6 +172,6 @@ export default defineConfig({
     }
   },
   async buildEnd(siteConfig) {
-    await generateRss(siteConfig.outDir);
+    await generateMetaFiles(siteConfig.outDir);
   }
 });
