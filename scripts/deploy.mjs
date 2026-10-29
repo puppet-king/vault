@@ -18,10 +18,13 @@ if (!KEY || !HOST) {
 
 const run = (cmd, opts = { stdio: 'inherit' }) => execSync(cmd, opts);
 
-console.log('1/3 Building VitePress site...');
-run('npm run build');
+console.log('1/4 Syncing article TTS audio to Qiniu...');
+run('node scripts/tts.mjs');
 
-console.log(`2/3 Deploying .vitepress/dist to ${HOST}:${REMOTE_DIR}...`);
+console.log('2/4 Building VitePress site...');
+run('pnpm build');
+
+console.log(`3/4 Deploying .vitepress/dist to ${HOST}:${REMOTE_DIR}...`);
 run(`tar -czf - -C .vitepress/dist . | ssh -i "${KEY}" ${HOST} "mkdir -p ${REMOTE_DIR} && rm -rf ${REMOTE_DIR}/* && tar -xzf - -C ${REMOTE_DIR}"`);
 
 console.log(`Deployed successfully -> ${SITE_URL || HOST}`);
@@ -35,7 +38,7 @@ if (BAIDU_TOKEN && SITE_URL && fs.existsSync('.vitepress/dist/sitemap.xml')) {
     .filter(u => !u.endsWith('/en.html') && !pushed.has(u));
 
   if (urls.length > 0) {
-    console.log(`3/3 Pushing ${urls.length} new URL(s) to Baidu...`);
+    console.log(`4/4 Pushing ${urls.length} new URL(s) to Baidu...`);
     try {
       const api = `http://data.zz.baidu.com/urls?site=${SITE_URL}&token=${BAIDU_TOKEN}`;
       const res = await fetch(api, {

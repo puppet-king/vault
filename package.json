@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "fetch": "node scripts/fetch.mjs",
+    "tts": "node scripts/tts.mjs",
     "dev": "vitepress dev --open=false",
     "build": "vitepress build",
     "preview": "vitepress preview",

@@ -1,16 +1,26 @@
 import DefaultTheme from 'vitepress/theme';
 import { onMounted, watch, nextTick } from 'vue';
-import { useRoute } from 'vitepress';
+import { useRoute, useData } from 'vitepress';
 import 'heti/umd/heti.min.css';
 import { data as posts } from './posts.data.mjs';
 import './custom.css';
 
 const WORD_RE = /[\u4e00-\u9fa5]|[a-zA-Z0-9]+/g;
+const SPEEDS = [1, 1.25, 1.5, 2];
+
+const fmtTime = s => {
+  if (!Number.isFinite(s) || s < 0) return '--:--';
+  const m = Math.floor(s / 60);
+  const sec = Math.floor(s % 60);
+  return `${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+};
 
 export default {
   extends: DefaultTheme,
   setup() {
     const route = useRoute();
+    const { theme } = useData();
+    let currentAudio = null;
 
     const setupProgressAndPreview = () => {
       if (document.querySelector('.vp-reading-progress')) return;
@@ -119,8 +129,14 @@ export default {
         heti.spacingElements([container]);
       }
 
-      // 3. 字数与阅读时长统计
+      // 3. 字数、阅读时长统计与极简音频条
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio = null;
+      }
       container.querySelector('.post-reading-meta')?.remove();
+      container.querySelector('.vp-audio-player')?.remove();
+
       if (route.path !== '/' && !route.path.startsWith('/about')) {
         const h1 = container.querySelector('h1');
         if (h1) {
@@ -139,6 +155,94 @@ export default {
           printBtn.onclick = () => window.print();
           meta.append(textSpan, printBtn);
           h1.insertAdjacentElement('afterend', meta);
+
+          const isArticle = route.path.startsWith('/translations/') || route.path.startsWith('/posts/');
+          const audioBase = theme.value.audioBaseUrl;
+          if (isArticle && audioBase) {
+            const slug = route.path
+              .replace(/\.html$/, '')
+              .replace(/\/index$/, '')
+              .replace(/^\/+|\/+$/g, '')
+              .replace(/\//g, '-');
+            const audioUrl = `${audioBase}/${slug}.mp3`;
+
+            const player = document.createElement('div');
+            player.className = 'vp-audio-player';
+
+            const audio = new Audio(audioUrl);
+            audio.preload = 'metadata';
+            currentAudio = audio;
+
+            const playBtn = document.createElement('button');
+            playBtn.className = 'vp-audio-btn';
+            playBtn.type = 'button';
+            playBtn.setAttribute('aria-label', isEn ? 'Listen to article' : '朗读全文');
+            const playIcon = '▶';
+            const pauseIcon = '⏸';
+            playBtn.textContent = playIcon;
+
+            const label = document.createElement('span');
+            label.className = 'vp-audio-label';
+            label.textContent = isEn ? 'Listen' : '听全文';
+
+            const slider = document.createElement('input');
+            slider.type = 'range';
+            slider.className = 'vp-audio-slider';
+            slider.min = '0';
+            slider.max = '100';
+            slider.step = '0.1';
+            slider.value = '0';
+
+            const timeSpan = document.createElement('span');
+            timeSpan.className = 'vp-audio-time';
+            timeSpan.textContent = '00:00 / --:--';
+
+            let speedIdx = 0;
+            const speedBtn = document.createElement('button');
+            speedBtn.type = 'button';
+            speedBtn.className = 'vp-audio-speed';
+            speedBtn.textContent = '1.0x';
+
+            playBtn.onclick = () => {
+              if (audio.paused) audio.play();
+              else audio.pause();
+            };
+
+            audio.onplay = () => { playBtn.textContent = pauseIcon; };
+            audio.onpause = () => { playBtn.textContent = playIcon; };
+            audio.onended = () => {
+              playBtn.textContent = playIcon;
+              slider.value = '0';
+            };
+            audio.onloadedmetadata = () => {
+              timeSpan.textContent = `00:00 / ${fmtTime(audio.duration)}`;
+            };
+            audio.ontimeupdate = () => {
+              if (!slider.matches(':active') && audio.duration) {
+                slider.value = String((audio.currentTime / audio.duration) * 100);
+              }
+              timeSpan.textContent = `${fmtTime(audio.currentTime)} / ${fmtTime(audio.duration)}`;
+            };
+            audio.onerror = () => {
+              player.style.display = 'none';
+            };
+
+            slider.oninput = () => {
+              if (audio.duration) {
+                audio.currentTime = (Number(slider.value) / 100) * audio.duration;
+              }
+            };
+
+            speedBtn.onclick = () => {
+              speedIdx = (speedIdx + 1) % SPEEDS.length;
+              const rate = SPEEDS[speedIdx];
+              audio.playbackRate = rate;
+              speedBtn.textContent = `${rate % 1 === 0 ? rate.toFixed(1) : rate}x`;
+            };
+
+            player.append(playBtn, label, slider, timeSpan, speedBtn);
+            meta.insertAdjacentElement('afterend', player);
+          }
         }
       }
 

@@ -10,6 +10,7 @@ try {
 const SITE_URL = process.env.SITE_URL || 'https://example.com';
 const BAIDU_VERIFICATION = process.env.BAIDU_SITE_VERIFICATION || '';
 const ICP_NUMBER = process.env.ICP_NUMBER || '';
+const QINIU_DOMAIN = (process.env.QINIU_DOMAIN || '').replace(/\/+$/, '');
 const SITE_TITLE = 'puppet4105的知识库';
 const SITE_DESC = '个人知识库与博客，记录思考、技术随笔、外文精译与独立开发作品。';
 
@@ -116,6 +117,7 @@ export default defineConfig({
   lang: 'zh-CN',
   title: SITE_TITLE,
   description: '个人博客 · 随笔与译文',
+  srcExclude: ['README.md', 'README-zh.md'],
   lastUpdated: true,
   head: [
     ['link', { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
@@ -144,6 +146,7 @@ export default defineConfig({
   },
   themeConfig: {
     logo: '/favicon.svg',
+    audioBaseUrl: QINIU_DOMAIN ? `${QINIU_DOMAIN}/vault/audio` : '',
     nav: [
       { text: '首页', link: '/' },
       {

@@ -187,6 +187,77 @@
   border-color: var(--vp-c-brand-1);
 }
 
+/* 极简听全文音频条 */
+.vp-audio-player {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.55rem 0.85rem;
+  margin: -0.4rem 0 1.4rem;
+  border-radius: 10px;
+  background: var(--vp-c-bg-soft);
+  border: 1px solid var(--vp-c-divider);
+}
+
+.vp-audio-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: none;
+  background: var(--vp-c-brand-1);
+  color: #fff;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: opacity 0.15s;
+}
+
+.vp-audio-btn:hover {
+  opacity: 0.88;
+}
+
+.vp-audio-label {
+  font-size: 0.84rem;
+  font-weight: 500;
+  color: var(--vp-c-text-1);
+  flex-shrink: 0;
+}
+
+.vp-audio-slider {
+  flex: 1;
+  min-width: 60px;
+  height: 4px;
+  accent-color: var(--vp-c-brand-1);
+  cursor: pointer;
+}
+
+.vp-audio-time {
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--vp-c-text-2);
+  flex-shrink: 0;
+}
+
+.vp-audio-speed {
+  padding: 0.12rem 0.45rem;
+  font-size: 0.76rem;
+  font-variant-numeric: tabular-nums;
+  border-radius: 5px;
+  border: 1px solid var(--vp-c-divider);
+  background: var(--vp-c-bg);
+  color: var(--vp-c-text-2);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.vp-audio-speed:hover {
+  color: var(--vp-c-brand-1);
+  border-color: var(--vp-c-brand-1);
+}
+
 /* 打印样式：所见即所得，保留屏幕字体、颜色与背景高亮 */
 @page {
   margin: 15mm 14mm;
@@ -208,6 +279,7 @@
   .vp-link-preview,
   .vp-code-toggle,
   .vp-print-btn,
+  .vp-audio-player,
   .header-anchor {
     display: none !important;
   }
