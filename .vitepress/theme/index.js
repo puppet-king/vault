@@ -21,6 +21,7 @@ export default {
     const route = useRoute();
     const { theme } = useData();
     let currentAudio = null;
+    let audioObserver = null;
 
     const setupProgressAndPreview = () => {
       if (document.querySelector('.vp-reading-progress')) return;
@@ -129,13 +130,17 @@ export default {
         heti.spacingElements([container]);
       }
 
-      // 3. 字数、阅读时长统计与吸顶音频条
+      // 3. 字数、阅读时长统计与音频条（仅在播放激活且滚出首屏时固定在右下角）
       if (currentAudio) {
         currentAudio.pause();
         currentAudio = null;
       }
+      if (audioObserver) {
+        audioObserver.disconnect();
+        audioObserver = null;
+      }
       container.querySelector('.post-reading-meta')?.remove();
-      container.querySelector('.vp-audio-player')?.remove();
+      container.querySelector('.vp-audio-slot')?.remove();
 
       if (route.path !== '/' && !route.path.startsWith('/about')) {
         const h1 = container.querySelector('h1');
@@ -166,12 +171,22 @@ export default {
               .replace(/\//g, '-');
             const audioUrl = `${audioBase}/${slug}.mp3`;
 
+            const slot = document.createElement('div');
+            slot.className = 'vp-audio-slot';
+
             const player = document.createElement('div');
             player.className = 'vp-audio-player';
+            slot.appendChild(player);
 
             const audio = new Audio(audioUrl);
             audio.preload = 'metadata';
             currentAudio = audio;
+
+            let isOut = false;
+            let isActive = false;
+            const syncFloating = () => {
+              player.classList.toggle('is-floating', isOut && isActive);
+            };
 
             const playBtn = document.createElement('button');
             playBtn.className = 'vp-audio-btn';
@@ -203,16 +218,35 @@ export default {
             speedBtn.className = 'vp-audio-speed';
             speedBtn.textContent = '1.0x';
 
+            const closeBtn = document.createElement('button');
+            closeBtn.type = 'button';
+            closeBtn.className = 'vp-audio-close';
+            closeBtn.textContent = '×';
+            closeBtn.title = isEn ? 'Close mini player' : '关闭悬浮播放';
+            closeBtn.onclick = () => {
+              audio.pause();
+              isActive = false;
+              syncFloating();
+            };
+
             playBtn.onclick = () => {
               if (audio.paused) audio.play();
               else audio.pause();
             };
 
-            audio.onplay = () => { playBtn.textContent = pauseIcon; };
-            audio.onpause = () => { playBtn.textContent = playIcon; };
+            audio.onplay = () => {
+              playBtn.textContent = pauseIcon;
+              isActive = true;
+              syncFloating();
+            };
+            audio.onpause = () => {
+              playBtn.textContent = playIcon;
+            };
             audio.onended = () => {
               playBtn.textContent = playIcon;
               slider.value = '0';
+              isActive = false;
+              syncFloating();
             };
             audio.onloadedmetadata = () => {
               timeSpan.textContent = `00:00 / ${fmtTime(audio.duration)}`;
@@ -224,7 +258,7 @@ export default {
               timeSpan.textContent = `${fmtTime(audio.currentTime)} / ${fmtTime(audio.duration)}`;
             };
             audio.onerror = () => {
-              player.style.display = 'none';
+              slot.style.display = 'none';
             };
 
             slider.oninput = () => {
@@ -240,8 +274,14 @@ export default {
               speedBtn.textContent = `${rate % 1 === 0 ? rate.toFixed(1) : rate}x`;
             };
 
-            player.append(playBtn, label, slider, timeSpan, speedBtn);
-            meta.insertAdjacentElement('afterend', player);
+            player.append(playBtn, label, slider, timeSpan, speedBtn, closeBtn);
+            meta.insertAdjacentElement('afterend', slot);
+
+            audioObserver = new IntersectionObserver(([entry]) => {
+              isOut = !entry.isIntersecting && entry.boundingClientRect.top < 0;
+              syncFloating();
+            });
+            audioObserver.observe(slot);
           }
         }
       }

@@ -187,27 +187,57 @@
   border-color: var(--vp-c-brand-1);
 }
 
-/* 极简听全文吸顶细条 */
+/* 听全文音频条（未播放时随页面自然滚走；仅在播放中且滚出首屏时固定在右下角，尺寸恒定不变形） */
+.vp-audio-slot {
+  min-height: 46px;
+  margin: -0.4rem 0 1.4rem;
+}
+
 .vp-audio-player {
-  position: sticky;
-  top: 52px;
-  z-index: 20;
   display: flex;
   align-items: center;
   gap: 0.65rem;
-  padding: 0.42rem 0.75rem;
-  margin: -0.4rem 0 1.4rem;
-  border-radius: 8px;
-  background: color-mix(in srgb, var(--vp-c-bg-soft) 90%, transparent);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  padding: 0.5rem 0.85rem;
+  border-radius: 10px;
+  background: var(--vp-c-bg-soft);
   border: 1px solid var(--vp-c-divider);
 }
 
-@media (min-width: 960px) {
-  .vp-audio-player {
-    top: calc(var(--vp-nav-height, 64px) + 6px);
-  }
+.vp-audio-close {
+  display: none;
+  border: none;
+  background: transparent;
+  color: var(--vp-c-text-2);
+  font-size: 16px;
+  line-height: 1;
+  padding: 0 2px;
+  cursor: pointer;
+}
+
+.vp-audio-close:hover {
+  color: var(--vp-c-text-1);
+}
+
+.vp-audio-player.is-floating {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 45;
+  width: min(380px, calc(100vw - 32px));
+  border-radius: 999px;
+  padding: 0.45rem 0.75rem 0.45rem 0.55rem;
+  background: color-mix(in srgb, var(--vp-c-bg-elv) 92%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.15);
+}
+
+.vp-audio-player.is-floating .vp-audio-label {
+  display: none;
+}
+
+.vp-audio-player.is-floating .vp-audio-close {
+  display: inline-flex;
 }
 
 .vp-audio-btn {
@@ -290,6 +320,7 @@
   .vp-link-preview,
   .vp-code-toggle,
   .vp-print-btn,
+  .vp-audio-slot,
   .vp-audio-player,
   .header-anchor {
     display: none !important;
