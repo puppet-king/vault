@@ -216,18 +216,28 @@ export default {
               if (audio.paused) audio.play();
               else audio.pause();
             };
-            playBtn.onclick = togglePlay;
-            label.onclick = () => {
-              if (player.classList.contains('is-floating') && audio.paused) audio.play();
-            };
+
+            const mainRow = document.createElement('div');
+            mainRow.className = 'vp-audio-main';
+            mainRow.onclick = togglePlay;
+            mainRow.append(playBtn, label);
+
+            const ctrlRow = document.createElement('div');
+            ctrlRow.className = 'vp-audio-controls';
+            ctrlRow.append(slider, timeSpan, speedBtn);
 
             audio.onplay = () => {
               playBtn.textContent = pauseIcon;
+              label.textContent = isEn ? 'Playing' : '朗读中';
               player.classList.add('is-active');
             };
-            audio.onpause = () => { playBtn.textContent = playIcon; };
+            audio.onpause = () => {
+              playBtn.textContent = playIcon;
+              label.textContent = isEn ? 'Listen' : '听全文';
+            };
             audio.onended = () => {
               playBtn.textContent = playIcon;
+              label.textContent = isEn ? 'Listen' : '听全文';
               slider.value = '0';
               player.classList.remove('is-active');
             };
@@ -258,7 +268,7 @@ export default {
               speedBtn.textContent = `${rate % 1 === 0 ? rate.toFixed(1) : rate}x`;
             };
 
-            player.append(playBtn, label, slider, timeSpan, speedBtn);
+            player.append(mainRow, ctrlRow);
             meta.insertAdjacentElement('afterend', slot);
 
             audioObserver = new IntersectionObserver(([entry]) => {
