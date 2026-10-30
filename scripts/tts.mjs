@@ -63,8 +63,10 @@ function cleanMarkdownForTts(raw) {
   }
 
   body = body
-    .replace(/^>\s*\[阅读(?:英文原版|中文精译版).*?\]\(.*?\)\s*$/gm, '')
+    .replace(/^>\s*(?:原文：|\[(?:阅读|返回)).*$/gm, '')
     .replace(/```[\s\S]*?```/g, '')
+    .replace(/\[!\[[^\]]*\]\([^)]+\)\]\([^)]+\)/g, '')
+    .replace(/!\[[^\]]*\]\([^)]+\)/g, '')
     .replace(/\[\\?\[\d+\\?\]\]\(#[^)]+\)/g, '')
     .replace(/<[^>]+>/g, '')
     .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
@@ -210,7 +212,7 @@ for (const file of files) {
     continue;
   }
 
-  if (existingHash === hash || !existingHash) {
+  if (!process.argv.includes('--force')) {
     try {
       const headRes = await fetch(remoteUrl, { method: 'HEAD' });
       if (headRes.ok) {
