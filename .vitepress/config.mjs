@@ -126,7 +126,7 @@ export default defineConfig({
   lang: 'zh-CN',
   title: SITE_TITLE,
   description: '个人博客 · 随笔与译文',
-  srcExclude: ['README.md', 'README-zh.md'],
+  srcExclude: ['README.md', 'README-zh.md', '.agent/**', '.agents/**'],
   lastUpdated: true,
   head: [
     ['link', { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
