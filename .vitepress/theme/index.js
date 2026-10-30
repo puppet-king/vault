@@ -163,12 +163,14 @@ export default {
 
           const isArticle = route.path.startsWith('/translations/') || route.path.startsWith('/posts/');
           const audioBase = theme.value.audioBaseUrl;
-          if (isArticle && audioBase) {
-            const slug = route.path
-              .replace(/\.html$/, '')
-              .replace(/\/index$/, '')
-              .replace(/^\/+|\/+$/g, '')
-              .replace(/\//g, '-');
+          const slug = route.path
+            .replace(/\.html$/, '')
+            .replace(/\/index$/, '')
+            .replace(/^\/+|\/+$/g, '')
+            .replace(/\//g, '-');
+          const initDur = theme.value.audioDurations?.[slug];
+
+          if (isArticle && audioBase && initDur) {
             const audioUrl = `${audioBase}/${slug}.mp3`;
 
             const slot = document.createElement('div');
@@ -178,9 +180,10 @@ export default {
             player.className = 'vp-audio-player';
             slot.appendChild(player);
 
-            const audio = new Audio(audioUrl);
-            audio.preload = 'metadata';
+            const audio = new Audio();
+            audio.preload = 'none';
             currentAudio = audio;
+            let totalDur = initDur;
 
             let isOut = false;
             let isActive = false;
@@ -210,13 +213,20 @@ export default {
 
             const timeSpan = document.createElement('span');
             timeSpan.className = 'vp-audio-time';
-            timeSpan.textContent = '00:00 / --:--';
+            timeSpan.textContent = `00:00 / ${fmtTime(totalDur)}`;
 
             let speedIdx = 0;
             const speedBtn = document.createElement('button');
             speedBtn.type = 'button';
             speedBtn.className = 'vp-audio-speed';
             speedBtn.textContent = '1.0x';
+
+            const ensureLoaded = () => {
+              if (!audio.src) {
+                audio.src = audioUrl;
+                audio.playbackRate = SPEEDS[speedIdx];
+              }
+            };
 
             const closeBtn = document.createElement('button');
             closeBtn.type = 'button';
@@ -230,6 +240,7 @@ export default {
             };
 
             playBtn.onclick = () => {
+              ensureLoaded();
               if (audio.paused) audio.play();
               else audio.pause();
             };
@@ -249,21 +260,25 @@ export default {
               syncFloating();
             };
             audio.onloadedmetadata = () => {
-              timeSpan.textContent = `00:00 / ${fmtTime(audio.duration)}`;
+              if (Number.isFinite(audio.duration) && audio.duration > 0) {
+                totalDur = audio.duration;
+              }
+              timeSpan.textContent = `${fmtTime(audio.currentTime)} / ${fmtTime(totalDur)}`;
             };
             audio.ontimeupdate = () => {
-              if (!slider.matches(':active') && audio.duration) {
-                slider.value = String((audio.currentTime / audio.duration) * 100);
+              if (!slider.matches(':active') && totalDur) {
+                slider.value = String((audio.currentTime / totalDur) * 100);
               }
-              timeSpan.textContent = `${fmtTime(audio.currentTime)} / ${fmtTime(audio.duration)}`;
+              timeSpan.textContent = `${fmtTime(audio.currentTime)} / ${fmtTime(totalDur)}`;
             };
             audio.onerror = () => {
               slot.style.display = 'none';
             };
 
             slider.oninput = () => {
-              if (audio.duration) {
-                audio.currentTime = (Number(slider.value) / 100) * audio.duration;
+              ensureLoaded();
+              if (totalDur) {
+                audio.currentTime = (Number(slider.value) / 100) * totalDur;
               }
             };
 

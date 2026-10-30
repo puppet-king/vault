@@ -1,3 +1,4 @@
+import fsSync from 'node:fs';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { defineConfig, createContentLoader } from 'vitepress';
@@ -5,6 +6,14 @@ import { works } from './theme/works.mjs';
 
 try {
   process.loadEnvFile('.env');
+} catch {}
+
+let audioDurations = {};
+try {
+  const rawCache = JSON.parse(fsSync.readFileSync('.vitepress/cache/tts-uploaded.json', 'utf8'));
+  for (const [k, v] of Object.entries(rawCache)) {
+    if (v?.duration > 0) audioDurations[k] = v.duration;
+  }
 } catch {}
 
 const SITE_URL = process.env.SITE_URL || 'https://example.com';
@@ -147,6 +156,7 @@ export default defineConfig({
   themeConfig: {
     logo: '/favicon.svg',
     audioBaseUrl: QINIU_DOMAIN ? `${QINIU_DOMAIN}/vault/audio` : '',
+    audioDurations,
     nav: [
       { text: '首页', link: '/' },
       {

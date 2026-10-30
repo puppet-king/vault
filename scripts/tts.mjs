@@ -202,18 +202,24 @@ for (const file of files) {
   const text = cleanMarkdownForTts(raw);
   const hash = crypto.createHash('sha1').update(`${voice}:${text}`).digest('hex');
 
-  if (cache[slug] === hash) {
+  const existing = cache[slug];
+  const existingHash = typeof existing === 'object' ? existing?.hash : existing;
+  const existingDur = typeof existing === 'object' ? existing?.duration : 0;
+
+  if (existingHash === hash && existingDur > 0) {
     continue;
   }
 
-  if (!cache[slug]) {
+  if (existingHash === hash || !existingHash) {
     try {
       const headRes = await fetch(remoteUrl, { method: 'HEAD' });
       if (headRes.ok) {
-        cache[slug] = hash;
+        const len = Number(headRes.headers.get('content-length') || 0);
+        const duration = Math.max(1, Math.round(len / 6000));
+        cache[slug] = { hash, duration };
         fs.mkdirSync('.vitepress/cache', { recursive: true });
         fs.writeFileSync(cacheFile, JSON.stringify(cache, null, 2));
-        console.log(`[TTS] Exists on Qiniu, cached: ${remoteUrl}`);
+        console.log(`[TTS] Exists on Qiniu (${duration}s), cached: ${remoteUrl}`);
         continue;
       }
     } catch {}
@@ -221,9 +227,10 @@ for (const file of files) {
 
   console.log(`[TTS] Generating (${voice}) -> ${slug}.mp3 ...`);
   const mp3Buf = synthArticle(text, voice, slug);
-  console.log(`[TTS] Uploading (${(mp3Buf.length / 1024 / 1024).toFixed(2)} MB) -> ${remoteUrl} ...`);
+  const duration = Math.max(1, Math.round(mp3Buf.length / 6000));
+  console.log(`[TTS] Uploading (${(mp3Buf.length / 1024 / 1024).toFixed(2)} MB, ${duration}s) -> ${remoteUrl} ...`);
   await uploadToQiniu(mp3Buf, key);
-  cache[slug] = hash;
+  cache[slug] = { hash, duration };
   fs.mkdirSync('.vitepress/cache', { recursive: true });
   fs.writeFileSync(cacheFile, JSON.stringify(cache, null, 2));
   console.log(`[TTS] Uploaded: ${remoteUrl}`);
