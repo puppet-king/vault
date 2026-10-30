@@ -1,8 +1,13 @@
 import crypto from 'node:crypto';
-import { spawn } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+
+// 微软语音节点与七牛云均为国内/亚洲直连节点，移除终端代理环境变量避免限速或卡死
+for (const k of ['HTTP_PROXY', 'HTTPS_PROXY', 'ALL_PROXY', 'http_proxy', 'https_proxy', 'all_proxy']) {
+  delete process.env[k];
+}
 
 try {
   process.loadEnvFile('.env');
@@ -20,13 +25,16 @@ if (!AK || !SK || !BUCKET || !DOMAIN) {
   process.exit(0);
 }
 
+const urlSafeBase64 = v =>
+  Buffer.from(v).toString('base64').replace(/\+/g, '-').replace(/\//g, '_');
+
 function makeUploadToken(key) {
   const policy = JSON.stringify({
     scope: `${BUCKET}:${key}`,
     deadline: Math.floor(Date.now() / 1000) + 3600
   });
-  const encodedPolicy = Buffer.from(policy).toString('base64url');
-  const sign = crypto.createHmac('sha1', SK).update(encodedPolicy).digest('base64url');
+  const encodedPolicy = urlSafeBase64(policy);
+  const sign = urlSafeBase64(crypto.createHmac('sha1', SK).update(encodedPolicy).digest());
   return `${AK}:${sign}:${encodedPolicy}`;
 }
 
@@ -76,7 +84,7 @@ function cleanMarkdownForTts(raw) {
   return body;
 }
 
-function splitIntoChunks(text, maxLen = 1800) {
+function splitIntoChunks(text, maxLen = 1000) {
   const paras = text.split(/\n\n+/);
   const chunks = [];
   let cur = '';
@@ -92,44 +100,76 @@ function splitIntoChunks(text, maxLen = 1800) {
   return chunks;
 }
 
-function synthChunk(text, voice, id) {
-  return new Promise((resolve, reject) => {
-    const tmpTxt = path.join(os.tmpdir(), `vault-tts-${id}.txt`);
-    const tmpMp3 = path.join(os.tmpdir(), `vault-tts-${id}.mp3`);
-    fs.writeFileSync(tmpTxt, text, 'utf8');
-    const proc = spawn('edge-tts', ['--file', tmpTxt, '--voice', voice, '--write-media', tmpMp3], {
-      stdio: 'ignore'
-    });
-    proc.on('close', code => {
-      try { fs.unlinkSync(tmpTxt); } catch {}
-      if (code === 0 && fs.existsSync(tmpMp3)) {
-        const buf = fs.readFileSync(tmpMp3);
-        try { fs.unlinkSync(tmpMp3); } catch {}
-        resolve(buf);
-      } else {
-        try { fs.unlinkSync(tmpMp3); } catch {}
-        reject(new Error(`edge-tts exited with code ${code}`));
-      }
-    });
-    proc.on('error', reject);
-  });
+const PY_SYNTH = `
+import asyncio, json, os, sys, edge_tts
+
+for k in ('HTTP_PROXY', 'HTTPS_PROXY', 'ALL_PROXY', 'http_proxy', 'https_proxy', 'all_proxy'):
+    os.environ.pop(k, None)
+
+async def main():
+    data = json.load(open(sys.argv[1], encoding='utf-8'))
+    voice = data['voice']
+    chunks = data['chunks']
+    out_path = data['out']
+    sem = asyncio.Semaphore(12)
+
+    async def fetch_audio(text):
+        comm = edge_tts.Communicate(text, voice)
+        buf = bytearray()
+        async for msg in comm.stream():
+            if msg['type'] == 'audio':
+                buf.extend(msg['data'])
+        return bytes(buf)
+
+    async def one(text):
+        async with sem:
+            for attempt in range(4):
+                try:
+                    b = await asyncio.wait_for(fetch_audio(text), timeout=25)
+                    if b:
+                        return b
+                except Exception:
+                    await asyncio.sleep(0.5)
+            raise RuntimeError('TTS chunk failed')
+
+    results = await asyncio.gather(*(one(c) for c in chunks))
+    with open(out_path, 'wb') as f:
+        for b in results:
+            f.write(b)
+
+asyncio.run(main())
+`;
+
+function findPythonWithEdgeTts() {
+  const candidates = [
+    'python',
+    'C:\\ProgramData\\miniconda3\\python.exe',
+    'C:\\Python314\\python.exe'
+  ];
+  for (const bin of candidates) {
+    try {
+      execFileSync(bin, ['-c', 'import edge_tts'], { stdio: 'ignore' });
+      return bin;
+    } catch {}
+  }
+  execFileSync('python', ['-m', 'pip', 'install', 'edge-tts', '-q'], { stdio: 'inherit' });
+  return 'python';
 }
 
-async function synthArticle(text, voice, slug) {
-  const chunks = splitIntoChunks(text, 1800);
-  const buffers = new Array(chunks.length);
-  const concurrency = 6;
-  let idx = 0;
+const PYTHON_BIN = findPythonWithEdgeTts();
 
-  async function worker() {
-    while (idx < chunks.length) {
-      const i = idx++;
-      buffers[i] = await synthChunk(chunks[i], voice, `${slug}-${i}`);
-    }
+function synthArticle(text, voice, slug) {
+  const chunks = splitIntoChunks(text, 1000);
+  const tmpJson = path.join(os.tmpdir(), `vault-tts-${slug}.json`);
+  const tmpMp3 = path.join(os.tmpdir(), `vault-tts-${slug}-out.mp3`);
+  fs.writeFileSync(tmpJson, JSON.stringify({ voice, chunks, out: tmpMp3 }), 'utf8');
+  try {
+    execFileSync(PYTHON_BIN, ['-c', PY_SYNTH, tmpJson], { stdio: 'inherit' });
+    return fs.readFileSync(tmpMp3);
+  } finally {
+    try { fs.unlinkSync(tmpJson); } catch {}
+    try { fs.unlinkSync(tmpMp3); } catch {}
   }
-
-  await Promise.all(Array.from({ length: Math.min(concurrency, chunks.length) }, () => worker()));
-  return Buffer.concat(buffers);
 }
 
 function collectMarkdownFiles(dir, list = []) {
@@ -145,7 +185,7 @@ function collectMarkdownFiles(dir, list = []) {
 const files = [
   ...collectMarkdownFiles('translations'),
   ...collectMarkdownFiles('posts')
-];
+].sort((a, b) => Number(a.endsWith('en.md')) - Number(b.endsWith('en.md')));
 
 const cacheFile = '.vitepress/cache/tts-uploaded.json';
 const cache = fs.existsSync(cacheFile) ? JSON.parse(fs.readFileSync(cacheFile, 'utf8')) : {};
@@ -180,7 +220,7 @@ for (const file of files) {
   }
 
   console.log(`[TTS] Generating (${voice}) -> ${slug}.mp3 ...`);
-  const mp3Buf = await synthArticle(text, voice, slug);
+  const mp3Buf = synthArticle(text, voice, slug);
   console.log(`[TTS] Uploading (${(mp3Buf.length / 1024 / 1024).toFixed(2)} MB) -> ${remoteUrl} ...`);
   await uploadToQiniu(mp3Buf, key);
   cache[slug] = hash;
