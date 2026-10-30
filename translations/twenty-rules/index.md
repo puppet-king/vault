@@ -128,7 +128,7 @@ description: SuperMemo 创始人、间隔重复算法之父 Piotr Wozniak 撰写
 
 来看看纯文字卡片与视觉图像卡片的直观差距（以中国省份地理位置为例）：
 
-![中国省份地理记忆卡片对比：纯文字描述 vs 视觉地图高亮](/images/twenty-rules/china-map-cloze.svg)
+![中国省份地理记忆卡片对比：纯文字描述 vs 视觉地图高亮](/images/twenty-rules/china-map-cloze.webp)
 
 ### 7. 使用助记术（Mnemonic Techniques）
 
@@ -140,7 +140,7 @@ description: SuperMemo 创始人、间隔重复算法之父 Piotr Wozniak 撰写
 
 下面是一张将本文核心脉络视觉化的中文思维导图示例：
 
-![知识拆解二十条准则全景思维导图](/images/twenty-rules/mindmap-memory.svg)
+![知识拆解二十条准则全景思维导图](/images/twenty-rules/mindmap-memory.webp)
 
 ### 8. 图像遮挡（Graphic Deletion）与文字挖空同样高效
 
@@ -150,7 +150,7 @@ description: SuperMemo 创始人、间隔重复算法之父 Piotr Wozniak 撰写
 
 来看一个中国地理“四大盆地与山脉阶梯”的图像遮挡实战示例：
 
-![中国四大盆地图像遮挡记忆卡：正面遮挡提问 vs 背面揭晓答案](/images/twenty-rules/graphic-deletion.svg)
+![中国四大盆地图像遮挡记忆卡：正面遮挡提问 vs 背面揭晓答案](/images/twenty-rules/graphic-deletion.webp)
 
 ::: tip 💡 如何在现代软件中制作“图像遮挡”卡片？
 - **Anki（23.10 及以上版本已原生内置）**：在添加卡片时直接选择 **图像遮挡（Image Occlusion）** 笔记类型，粘贴截图后用矩形工具框选图中的文字标签（如框选“准噶尔盆地”、“塔里木盆地”、“柴达木盆地”、“四川盆地”四个位置），点击“隐藏一个，猜一个（Hide One, Guess One）”，10 秒钟就能自动生成 4 张互不干扰的看图填空卡！
