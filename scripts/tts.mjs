@@ -86,16 +86,18 @@ function cleanMarkdownForTts(raw) {
   return body;
 }
 
-function splitIntoChunks(text, maxLen = 1000) {
-  const paras = text.split(/\n\n+/);
+function splitIntoChunks(text, maxLen = 900) {
+  const paras = text.split(/\n+/);
   const chunks = [];
   let cur = '';
   for (const p of paras) {
-    if (cur && (cur.length + p.length + 2) > maxLen) {
+    const trimmed = p.trim();
+    if (!trimmed) continue;
+    if (cur && (cur.length + trimmed.length + 2) > maxLen) {
       chunks.push(cur);
-      cur = p;
+      cur = trimmed;
     } else {
-      cur = cur ? `${cur}\n\n${p}` : p;
+      cur = cur ? `${cur}\n${trimmed}` : trimmed;
     }
   }
   if (cur) chunks.push(cur);
@@ -113,7 +115,7 @@ async def main():
     voice = data['voice']
     chunks = data['chunks']
     out_path = data['out']
-    sem = asyncio.Semaphore(12)
+    sem = asyncio.Semaphore(8)
 
     async def fetch_audio(text):
         comm = edge_tts.Communicate(text, voice)
@@ -125,13 +127,13 @@ async def main():
 
     async def one(text):
         async with sem:
-            for attempt in range(4):
+            for attempt in range(5):
                 try:
-                    b = await asyncio.wait_for(fetch_audio(text), timeout=25)
+                    b = await asyncio.wait_for(fetch_audio(text), timeout=45)
                     if b:
                         return b
                 except Exception:
-                    await asyncio.sleep(0.5)
+                    await asyncio.sleep(1.0)
             raise RuntimeError('TTS chunk failed')
 
     results = await asyncio.gather(*(one(c) for c in chunks))

@@ -28,7 +28,7 @@ You can do this haphazardly by immersing yourself in a language, for example, wh
 
 But memory research shows that **the most effective and efficient time for a new fact to be remembered is right before you were about to forget it**.
 
-[![forgetting curve](https://m.sive.rs/images/forgetting-curve-srs.jpg)](http://quantifiedself.com/2012/06/spaced-repetition-and-learning/)
+[![forgetting curve](/images/srs/forgetting-curve-srs.webp)](http://quantifiedself.com/2012/06/spaced-repetition-and-learning/)
 
 Say if you learn a new word in a foreign language, you’d want to practice it again a few minutes after hearing it, then a few hours, then the next day, then in 2 days, then 5 days, then 10 days, 3 weeks, 6 weeks, 3 months, 8 months, etc.
 After a while it’s basically permanently memorized with a rare reminder.
@@ -67,13 +67,13 @@ Answer on the back.
 If you were just using this to memorize foreign language vocabulary, then the formatting would be easy.
 The front would have a word or phrase, and the back would have its translation, and vice-versa.
 
-![example chinese flash card question](https://m.sive.rs/images/anki-cn-1.png)
+![example chinese flash card question](/images/srs/anki-cn-1.webp)
 
-![example chinese flash card answer](https://m.sive.rs/images/anki-cn-2.png)
+![example chinese flash card answer](/images/srs/anki-cn-2.webp)
 
-![example chinese flash card question](https://m.sive.rs/images/anki-cn-3.png)
+![example chinese flash card question](/images/srs/anki-cn-3.webp)
 
-![example chinese flash card answer](https://m.sive.rs/images/anki-cn-4.png)
+![example chinese flash card answer](/images/srs/anki-cn-4.webp)
 
 But if you’re learning anything else, you’re going to have to put a little craft and creativity into making your own flash cards.
 

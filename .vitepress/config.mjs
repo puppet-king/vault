@@ -162,6 +162,7 @@ export default defineConfig({
       {
         text: '译文',
         items: [
+          { text: '知识拆解二十条准则', link: '/translations/twenty-rules/' },
           { text: '用间隔重复记住编程语言', link: '/translations/srs/' },
           { text: '品牌时代', link: '/translations/brandage/' },
           { text: '何时去做自己热爱的事', link: '/translations/when/' },

@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 390" width="100%" height="auto" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif">
+  <defs>
+    <linearGradient id="gdBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#f1f5f9"/>
+    </linearGradient>
+    <filter id="gdShadow" x="-4%" y="-4%" width="108%" height="112%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#0f172a" flood-opacity="0.07"/>
+    </filter>
+  </defs>
+
+  <rect width="820" height="390" rx="16" fill="url(#gdBg)" stroke="#e2e8f0" stroke-width="1.5"/>
+
+  <!-- Left Card: Question Side (Image Occlusion Active) -->
+  <g filter="url(#gdShadow)">
+    <rect x="24" y="22" width="372" height="346" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+  </g>
+  <rect x="24" y="22" width="372" height="42" rx="12" fill="#eff6ff"/>
+  <rect x="24" y="52" width="372" height="12" fill="#eff6ff"/>
+  <circle cx="46" cy="43" r="9" fill="#3b82f6"/>
+  <text x="46" y="47" font-size="11" font-weight="800" fill="#ffffff" text-anchor="middle">Q</text>
+  <text x="64" y="48" font-size="14.5" font-weight="700" fill="#1e3a8a">卡片正面（问题）：红色遮挡处是什么盆地？</text>
+
+  <!-- Schematic Map of China's Four Major Basins (Left) -->
+  <g transform="translate(42, 78)">
+    <rect x="0" y="0" width="336" height="224" rx="8" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+    <!-- Mountain ranges dividers -->
+    <path d="M 30 56 Q 85 50 140 58" fill="none" stroke="#94a3b8" stroke-width="3" stroke-dasharray="5,3"/>
+    <text x="85" y="51" font-size="10.5" fill="#64748b" text-anchor="middle">天山山脉</text>
+
+    <path d="M 35 112 Q 105 106 175 116" fill="none" stroke="#94a3b8" stroke-width="3" stroke-dasharray="5,3"/>
+    <text x="105" y="107" font-size="10.5" fill="#64748b" text-anchor="middle">昆仑山—阿尔金山</text>
+
+    <path d="M 190 120 Q 245 114 300 122" fill="none" stroke="#94a3b8" stroke-width="3" stroke-dasharray="5,3"/>
+    <text x="245" y="114" font-size="10.5" fill="#64748b" text-anchor="middle">秦岭—大巴山</text>
+
+    <!-- Basin 1: Junggar Basin -->
+    <ellipse cx="88" cy="28" rx="52" ry="18" fill="#e0f2fe" stroke="#38bdf8" stroke-width="1.5"/>
+    <text x="88" y="33" font-size="12.5" font-weight="600" fill="#0369a1" text-anchor="middle">① 准噶尔盆地</text>
+
+    <!-- Basin 2: Tarim Basin -->
+    <ellipse cx="92" cy="82" rx="64" ry="20" fill="#e0f2fe" stroke="#38bdf8" stroke-width="1.5"/>
+    <text x="92" y="87" font-size="12.5" font-weight="600" fill="#0369a1" text-anchor="middle">② 塔里木盆地</text>
+
+    <!-- Basin 3: Qaidam Basin -->
+    <ellipse cx="128" cy="144" rx="54" ry="18" fill="#e0f2fe" stroke="#38bdf8" stroke-width="1.5"/>
+    <text x="128" y="149" font-size="12.5" font-weight="600" fill="#0369a1" text-anchor="middle">③ 柴达木盆地</text>
+
+    <!-- Tibetan Plateau reference -->
+    <rect x="44" y="176" width="128" height="32" rx="6" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1"/>
+    <text x="108" y="196" font-size="11.5" fill="#64748b" text-anchor="middle">青藏高原（第一阶梯）</text>
+
+    <!-- Basin 4: Sichuan Basin (OCCLUDED WITH RED BOX!) -->
+    <ellipse cx="248" cy="166" rx="62" ry="26" fill="#dcfce7" stroke="#4ade80" stroke-width="1.5"/>
+    <rect x="182" y="138" width="132" height="56" rx="8" fill="#ef4444" stroke="#b91c1c" stroke-width="2"/>
+    <text x="248" y="164" font-size="15" font-weight="800" fill="#ffffff" text-anchor="middle">[ ? 遮挡提问区 ]</text>
+    <text x="248" y="182" font-size="11" fill="#fee2e2" text-anchor="middle">点击或按空格揭晓</text>
+  </g>
+
+  <text x="210" y="330" font-size="12.5" fill="#475569" text-anchor="middle">保留周围山脉与其他盆地作为空间参照，仅用红框遮挡目标区域</text>
+  <text x="210" y="350" font-size="12" fill="#64748b" text-anchor="middle">（同一张底图移动红框位置，即可快速生成 4 张独立卡片）</text>
+
+  <!-- Arrow between Left and Right -->
+  <path d="M 398 195 L 420 195" stroke="#64748b" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M 414 189 L 421 195 L 414 201" fill="none" stroke="#64748b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Right Card: Answer Side (Revealed) -->
+  <g filter="url(#gdShadow)">
+    <rect x="424" y="22" width="372" height="346" rx="12" fill="#ffffff" stroke="#bbf7d0" stroke-width="1.5"/>
+  </g>
+  <rect x="424" y="22" width="372" height="42" rx="12" fill="#f0fdf4"/>
+  <rect x="424" y="52" width="372" height="12" fill="#f0fdf4"/>
+  <circle cx="446" cy="43" r="9" fill="#10b981"/>
+  <text x="446" y="47" font-size="11" font-weight="800" fill="#ffffff" text-anchor="middle">A</text>
+  <text x="464" y="48" font-size="14.5" font-weight="700" fill="#065f46">卡片背面（答案）：移开遮挡框，揭晓名称</text>
+
+  <!-- Schematic Map of China's Four Major Basins (Right - Revealed) -->
+  <g transform="translate(442, 78)">
+    <rect x="0" y="0" width="336" height="224" rx="8" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+    <!-- Mountain ranges dividers -->
+    <path d="M 30 56 Q 85 50 140 58" fill="none" stroke="#94a3b8" stroke-width="3" stroke-dasharray="5,3"/>
+    <text x="85" y="51" font-size="10.5" fill="#64748b" text-anchor="middle">天山山脉</text>
+
+    <path d="M 35 112 Q 105 106 175 116" fill="none" stroke="#94a3b8" stroke-width="3" stroke-dasharray="5,3"/>
+    <text x="105" y="107" font-size="10.5" fill="#64748b" text-anchor="middle">昆仑山—阿尔金山</text>
+
+    <path d="M 190 120 Q 245 114 300 122" fill="none" stroke="#94a3b8" stroke-width="3" stroke-dasharray="5,3"/>
+    <text x="245" y="114" font-size="10.5" fill="#64748b" text-anchor="middle">秦岭—大巴山</text>
+
+    <!-- Basin 1: Junggar Basin -->
+    <ellipse cx="88" cy="28" rx="52" ry="18" fill="#e0f2fe" stroke="#38bdf8" stroke-width="1.5"/>
+    <text x="88" y="33" font-size="12.5" font-weight="600" fill="#0369a1" text-anchor="middle">① 准噶尔盆地</text>
+
+    <!-- Basin 2: Tarim Basin -->
+    <ellipse cx="92" cy="82" rx="64" ry="20" fill="#e0f2fe" stroke="#38bdf8" stroke-width="1.5"/>
+    <text x="92" y="87" font-size="12.5" font-weight="600" fill="#0369a1" text-anchor="middle">② 塔里木盆地</text>
+
+    <!-- Basin 3: Qaidam Basin -->
+    <ellipse cx="128" cy="144" rx="54" ry="18" fill="#e0f2fe" stroke="#38bdf8" stroke-width="1.5"/>
+    <text x="128" y="149" font-size="12.5" font-weight="600" fill="#0369a1" text-anchor="middle">③ 柴达木盆地</text>
+
+    <!-- Tibetan Plateau reference -->
+    <rect x="44" y="176" width="128" height="32" rx="6" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1"/>
+    <text x="108" y="196" font-size="11.5" fill="#64748b" text-anchor="middle">青藏高原（第一阶梯）</text>
+
+    <!-- Basin 4: Sichuan Basin (REVEALED!) -->
+    <ellipse cx="248" cy="166" rx="62" ry="26" fill="#dcfce7" stroke="#10b981" stroke-width="2.5"/>
+    <text x="248" y="163" font-size="14" font-weight="800" fill="#065f46" text-anchor="middle">④ 四川盆地</text>
+    <text x="248" y="180" font-size="11" font-weight="600" fill="#059669" text-anchor="middle">（“天府之国”）</text>
+  </g>
+
+  <rect x="442" y="314" width="336" height="40" rx="8" fill="#ecfdf5" stroke="#a7f3d0" stroke-width="1"/>
+  <text x="610" y="339" font-size="13.5" font-weight="700" fill="#047857" text-anchor="middle">答案揭晓：④ 四川盆地（位于秦岭以南、巫山以西）</text>
+</svg>

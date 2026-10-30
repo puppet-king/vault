@@ -30,7 +30,7 @@ description: 为什么看了无数技术书和文档，写代码时还是得频�
 
 记忆心理学的研究早就证实：==巩固一个新知识点最有效、最省力的时机，恰恰是在你快要忘记它的前一刻==。
 
-[![遗忘曲线](https://m.sive.rs/images/forgetting-curve-srs.jpg)](http://quantifiedself.com/2026/06/spaced-repetition-and-learning/)
+[![遗忘曲线](/images/srs/forgetting-curve-srs.webp)](http://quantifiedself.com/2026/06/spaced-repetition-and-learning/)
 
 比方说，你刚学了一个外语新单词，最理想的复习节奏是：刚听完过几分钟考自己一次，隔几个小时再考一次，接着是第二天、2 天后、5 天后、10 天后、3 周后、6 周后、3 个月后、8 个月后……如此循环几次之后，这个词基本就永久刻进你的长期记忆里了，往后只需要极偶尔地唤醒一下即可。
 
@@ -58,13 +58,13 @@ description: 为什么看了无数技术书和文档，写代码时还是得频�
 
 如果只是拿它来背外语单词，卡片格式再简单不过了：正面写外语单词或短语，背面写母语释义（反过来再做一张）。
 
-![中文闪卡问题示例 1](https://m.sive.rs/images/anki-cn-1.png)
+![中文闪卡问题示例 1](/images/srs/anki-cn-1.webp)
 
-![中文闪卡答案示例 1](https://m.sive.rs/images/anki-cn-2.png)
+![中文闪卡答案示例 1](/images/srs/anki-cn-2.webp)
 
-![中文闪卡问题示例 2](https://m.sive.rs/images/anki-cn-3.png)
+![中文闪卡问题示例 2](/images/srs/anki-cn-3.webp)
 
-![中文闪卡答案示例 2](https://m.sive.rs/images/anki-cn-4.png)
+![中文闪卡答案示例 2](/images/srs/anki-cn-4.webp)
 
 但如果你用它来学编程或其他专业技能，做卡片就需要花点心思和巧劲了。
 
@@ -255,7 +255,7 @@ class D
 
 ### 6. 必读：Piotr Wozniak 的《知识拆解二十条准则》
 
-关于如何把知识拆解成好卡片，最经典的指南莫过于 SuperMemo 创始人 Piotr Wozniak 写的《[知识拆解二十条准则（20 Rules of Formulating Knowledge）](https://www.supermemo.com/en/blog/twenty-rules-of-formulating-knowledge)》，强烈建议读一读。
+关于如何把知识拆解成好卡片，最经典的指南莫过于 SuperMemo 创始人 Piotr Wozniak 写的《[知识拆解二十条准则（20 Rules of Formulating Knowledge）](/translations/twenty-rules/)》，强烈建议读一读。
 
 ## 第三步：每天雷打不动地刷完
 
