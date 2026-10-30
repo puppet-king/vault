@@ -187,16 +187,55 @@
   border-color: var(--vp-c-brand-1);
 }
 
-/* 极简听全文音频条 */
+/* 极简听全文音频条（支持滚出首屏后自动变为右下角悬浮胶囊） */
+.vp-audio-slot {
+  min-height: 46px;
+  margin: -0.4rem 0 1.4rem;
+}
+
 .vp-audio-player {
   display: flex;
   align-items: center;
   gap: 0.65rem;
   padding: 0.55rem 0.85rem;
-  margin: -0.4rem 0 1.4rem;
   border-radius: 10px;
   background: var(--vp-c-bg-soft);
   border: 1px solid var(--vp-c-divider);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.vp-audio-player.is-floating {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 45;
+  border-radius: 999px;
+  padding: 0.45rem 0.85rem 0.45rem 0.55rem;
+  background: color-mix(in srgb, var(--vp-c-bg-elv) 88%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.14);
+}
+
+.vp-audio-player.is-floating:not(.is-active):not(:hover) .vp-audio-slider,
+.vp-audio-player.is-floating:not(.is-active):not(:hover) .vp-audio-time,
+.vp-audio-player.is-floating:not(.is-active):not(:hover) .vp-audio-speed {
+  display: none;
+}
+
+.vp-audio-player.is-floating:not(.is-active) .vp-audio-label {
+  cursor: pointer;
+}
+
+.vp-audio-player.is-floating.is-active,
+.vp-audio-player.is-floating:hover {
+  width: min(370px, calc(100vw - 32px));
+  padding: 0.45rem 0.75rem 0.45rem 0.55rem;
+}
+
+.vp-audio-player.is-floating.is-active .vp-audio-label,
+.vp-audio-player.is-floating:hover .vp-audio-label {
+  display: none;
 }
 
 .vp-audio-btn {
@@ -279,6 +318,7 @@
   .vp-link-preview,
   .vp-code-toggle,
   .vp-print-btn,
+  .vp-audio-slot,
   .vp-audio-player,
   .header-anchor {
     display: none !important;
