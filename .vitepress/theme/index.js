@@ -21,7 +21,6 @@ export default {
     const route = useRoute();
     const { theme } = useData();
     let currentAudio = null;
-    let audioObserver = null;
 
     const setupProgressAndPreview = () => {
       if (document.querySelector('.vp-reading-progress')) return;
@@ -130,17 +129,13 @@ export default {
         heti.spacingElements([container]);
       }
 
-      // 3. 字数、阅读时长统计与极简音频条
+      // 3. 字数、阅读时长统计与吸顶音频条
       if (currentAudio) {
         currentAudio.pause();
         currentAudio = null;
       }
-      if (audioObserver) {
-        audioObserver.disconnect();
-        audioObserver = null;
-      }
       container.querySelector('.post-reading-meta')?.remove();
-      container.querySelector('.vp-audio-slot')?.remove();
+      container.querySelector('.vp-audio-player')?.remove();
 
       if (route.path !== '/' && !route.path.startsWith('/about')) {
         const h1 = container.querySelector('h1');
@@ -171,12 +166,8 @@ export default {
               .replace(/\//g, '-');
             const audioUrl = `${audioBase}/${slug}.mp3`;
 
-            const slot = document.createElement('div');
-            slot.className = 'vp-audio-slot';
-
             const player = document.createElement('div');
             player.className = 'vp-audio-player';
-            slot.appendChild(player);
 
             const audio = new Audio(audioUrl);
             audio.preload = 'metadata';
@@ -212,34 +203,16 @@ export default {
             speedBtn.className = 'vp-audio-speed';
             speedBtn.textContent = '1.0x';
 
-            const togglePlay = () => {
+            playBtn.onclick = () => {
               if (audio.paused) audio.play();
               else audio.pause();
             };
 
-            const mainRow = document.createElement('div');
-            mainRow.className = 'vp-audio-main';
-            mainRow.onclick = togglePlay;
-            mainRow.append(playBtn, label);
-
-            const ctrlRow = document.createElement('div');
-            ctrlRow.className = 'vp-audio-controls';
-            ctrlRow.append(slider, timeSpan, speedBtn);
-
-            audio.onplay = () => {
-              playBtn.textContent = pauseIcon;
-              label.textContent = isEn ? 'Playing' : '朗读中';
-              player.classList.add('is-active');
-            };
-            audio.onpause = () => {
-              playBtn.textContent = playIcon;
-              label.textContent = isEn ? 'Listen' : '听全文';
-            };
+            audio.onplay = () => { playBtn.textContent = pauseIcon; };
+            audio.onpause = () => { playBtn.textContent = playIcon; };
             audio.onended = () => {
               playBtn.textContent = playIcon;
-              label.textContent = isEn ? 'Listen' : '听全文';
               slider.value = '0';
-              player.classList.remove('is-active');
             };
             audio.onloadedmetadata = () => {
               timeSpan.textContent = `00:00 / ${fmtTime(audio.duration)}`;
@@ -251,13 +224,12 @@ export default {
               timeSpan.textContent = `${fmtTime(audio.currentTime)} / ${fmtTime(audio.duration)}`;
             };
             audio.onerror = () => {
-              slot.style.display = 'none';
+              player.style.display = 'none';
             };
 
             slider.oninput = () => {
               if (audio.duration) {
                 audio.currentTime = (Number(slider.value) / 100) * audio.duration;
-                player.classList.add('is-active');
               }
             };
 
@@ -268,13 +240,8 @@ export default {
               speedBtn.textContent = `${rate % 1 === 0 ? rate.toFixed(1) : rate}x`;
             };
 
-            player.append(mainRow, ctrlRow);
-            meta.insertAdjacentElement('afterend', slot);
-
-            audioObserver = new IntersectionObserver(([entry]) => {
-              player.classList.toggle('is-floating', !entry.isIntersecting && entry.boundingClientRect.top < 0);
-            });
-            audioObserver.observe(slot);
+            player.append(playBtn, label, slider, timeSpan, speedBtn);
+            meta.insertAdjacentElement('afterend', player);
           }
         }
       }
