@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CSS 动画缓动曲线可视化实验室</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+      background-color: #090D16;
+      color: #F8FAFC;
+    }
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.4);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(71, 85, 105, 0.5);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(100, 116, 139, 0.8);
+    }
+    .grid-bg {
+      background-size: 24px 24px;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    }
+    @media print {
+      #curvesGrid {
+        max-height: none !important;
+        overflow: visible !important;
+      }
+      header {
+        position: static !important;
+      }
+      .curve-card {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-blue-500 selection:text-white">
+
+  <!-- Top Header -->
+  <header class="sticky top-0 z-30 backdrop-blur-xl bg-[#090D16]/85 border-b border-white/[0.06] px-4 lg:px-8 py-3.5">
+    <div class="max-w-[1440px] mx-auto flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/25 ring-1 ring-white/20">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-base sm:text-lg font-bold tracking-tight text-white">CSS 动画缓动曲线可视化实验室</h1>
+            <span class="px-2 py-0.5 text-[11px] font-semibold rounded-full bg-emerald-500/10 text-emerald-400 ring-1 ring-emerald-500/20">39 种曲线全收录</span>
+          </div>
+          <p class="text-xs text-slate-400">支持 cubic-bezier() 与 linear() 物理弹簧曲线实时模拟与对比</p>
+        </div>
+      </div>
+
+      <!-- Global Controls -->
+      <div class="flex flex-wrap items-center gap-3">
+        <!-- Duration Control -->
+        <div class="flex items-center gap-2.5 bg-slate-900/90 px-3.5 py-2 rounded-xl ring-1 ring-white/[0.07]">
+          <span class="text-xs font-medium text-slate-400">动画时长</span>
+          <input id="durationSlider" type="range" min="300" max="3000" step="100" value="1200" class="w-24 sm:w-28 accent-blue-500 cursor-pointer" />
+          <span id="durationLabel" class="text-xs font-bold font-mono text-blue-400 tabular-nums w-14 text-right">1200ms</span>
+        </div>
+
+        <!-- Loop Toggle -->
+        <button id="loopToggleBtn" class="h-9 px-3.5 rounded-xl bg-blue-500/15 text-blue-300 ring-1 ring-blue-400/30 text-xs font-semibold flex items-center gap-1.5 hover:bg-blue-500/25 transition">
+          <span id="loopDot" class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
+          <span>自动循环播放</span>
+        </button>
+
+        <!-- Replay Button -->
+        <button id="replayAllBtn" class="h-9 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 active:scale-[0.98] text-white text-xs font-bold flex items-center gap-1.5 shadow-lg shadow-blue-600/25 transition">
+          <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path>
+          </svg>
+          <span>立即触发一次</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Workspace -->
+  <main class="flex-1 max-w-[1440px] w-full mx-auto px-4 lg:px-8 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+    
+    <!-- Left Column: Interactive Stage & Simulator (5 Cols on Desktop) -->
+    <div class="lg:col-span-5 flex flex-col gap-5">
+      
+      <!-- Active Curve Inspector Card -->
+      <section class="bg-[#111827]/90 rounded-3xl p-5 ring-1 ring-white/[0.07] shadow-2xl flex flex-col gap-4">
+        <div class="flex items-start justify-between gap-2">
+          <div>
+            <div class="flex items-center gap-2">
+              <span id="activeCategoryBadge" class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-blue-500/15 text-blue-300 ring-1 ring-blue-400/20">标准内置曲线</span>
+              <span id="activeOvershootBadge" class="hidden px-2 py-0.5 rounded-full text-[11px] font-semibold bg-amber-500/15 text-amber-300 ring-1 ring-amber-400/20">含过冲回弹</span>
+            </div>
+            <h2 id="activeCurveName" class="text-2xl font-extrabold tracking-tight text-white font-mono mt-1.5">easeOutBack</h2>
+            <p id="activeCurveDesc" class="text-xs text-slate-400 mt-0.5">缓出并越过终点少许再回正（有过冲）</p>
+          </div>
+          <button id="copyCodeBtn" class="px-3 py-1.5 rounded-xl bg-white/[0.06] hover:bg-white/[0.12] text-xs font-medium text-slate-200 ring-1 ring-white/10 flex items-center gap-1.5 transition shrink-0">
+            <svg class="w-3.5 h-3.5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+            </svg>
+            <span id="copyBtnText">复制 CSS 代码</span>
+          </button>
+        </div>
+
+        <!-- Graph + UI Simulator Split -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-stretch">
+          <!-- Large Mathematical Curve Graph -->
+          <div class="bg-[#0B111E] rounded-2xl p-3.5 ring-1 ring-white/[0.05] flex flex-col justify-between relative overflow-hidden grid-bg">
+            <div class="flex items-center justify-between text-[11px] text-slate-400 font-mono z-10">
+              <span>进度 y (Progress)</span>
+              <span id="liveProgressText" class="text-blue-400 font-bold tabular-nums">t=0.00 | y=0.00</span>
+            </div>
+            <div class="my-1 flex items-center justify-center">
+              <canvas id="mainGraphCanvas" width="240" height="220" class="w-full max-w-[240px] h-auto"></canvas>
+            </div>
+            <div class="flex items-center justify-between text-[11px] text-slate-500 font-mono z-10">
+              <span>0.0</span>
+              <span>时间 t (Time) → 1.0</span>
+            </div>
+          </div>
+
+          <!-- UI Component Simulator (Workout Assistant Theme) -->
+          <div class="bg-[#0B111E] rounded-2xl p-3.5 ring-1 ring-white/[0.05] flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-[11px] font-semibold text-slate-400">UI 组件动效预览</span>
+              <div class="flex items-center gap-1 bg-slate-900 p-0.5 rounded-lg ring-1 ring-white/5">
+                <button data-sim="sheet" class="sim-mode-btn px-2 py-0.5 rounded-md text-[11px] font-semibold bg-blue-600 text-white transition">底部抽屉</button>
+                <button data-sim="card" class="sim-mode-btn px-2 py-0.5 rounded-md text-[11px] font-medium text-slate-400 hover:text-white transition">卡片位移</button>
+                <button data-sim="scale" class="sim-mode-btn px-2 py-0.5 rounded-md text-[11px] font-medium text-slate-400 hover:text-white transition">缩放弹入</button>
+              </div>
+            </div>
+
+            <!-- Mini Viewport Screen -->
+            <div class="relative w-full h-[200px] rounded-2xl bg-[#0F172A] ring-1 ring-white/10 overflow-hidden flex flex-col justify-between select-none">
+              <!-- Fake Status Bar -->
+              <div class="px-3 pt-2 flex items-center justify-between text-[10px] text-slate-400">
+                <span class="font-semibold text-slate-300">训练助手 · Web UI</span>
+                <span class="px-1.5 py-0.5 rounded-full bg-white/10 text-[9px] font-mono">••• | ◎</span>
+              </div>
+
+              <!-- Background Content inside viewport -->
+              <div class="px-3 py-1 space-y-1.5 opacity-45">
+                <div class="h-6 rounded-lg bg-slate-800/90 flex items-center px-2 justify-between">
+                  <span class="text-[10px] text-slate-300">近7日容量 9,840 kg</span>
+                  <span class="text-[10px] text-emerald-400 font-mono">+12%</span>
+                </div>
+                <div class="h-8 rounded-lg bg-slate-800/60"></div>
+              </div>
+
+              <!-- Mode 1: Bottom Sheet Simulation -->
+              <div id="simSheetEl" class="absolute inset-x-0 bottom-0 h-[135px] bg-gradient-to-b from-[#1E293B] to-[#0F172A] rounded-t-2xl ring-1 ring-white/15 shadow-2xl p-3 flex flex-col justify-between" style="transform: translateY(100%);">
+                <div>
+                  <div class="w-8 h-1 rounded-full bg-slate-500/60 mx-auto mb-2"></div>
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-white">01. 杠铃平板卧推</span>
+                    <span class="text-[10px] font-bold text-blue-400 bg-blue-500/15 px-2 py-0.5 rounded-full tabular-nums">4 × 6-8</span>
+                  </div>
+                  <p class="text-[10px] text-slate-400 mt-1">transform: translateY()</p>
+                </div>
+                <div class="h-7 rounded-xl bg-blue-600 flex items-center justify-center text-[11px] font-bold text-white shadow-md shadow-blue-600/30">
+                  记录本组完成 (60kg)
+                </div>
+              </div>
+
+              <!-- Mode 2: Card Slide Simulation -->
+              <div id="simCardEl" class="hidden absolute inset-x-3 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl p-3 shadow-xl ring-1 ring-white/20" style="transform: translate(-120%, -50%);">
+                <div class="text-xs font-bold text-white">⚡ 今日主推 · 胸肩三头</div>
+                <div class="text-[10px] text-blue-100 mt-0.5">水平位移过渡动画预览</div>
+              </div>
+
+              <!-- Mode 3: Modal Scale Simulation -->
+              <div id="simScaleEl" class="hidden absolute inset-x-5 top-1/2 -translate-y-1/2 bg-[#1E293B] rounded-2xl p-3 shadow-2xl ring-1 ring-blue-400/30 text-center" style="transform: translateY(-50%) scale(0);">
+                <div class="text-lg">🏆</div>
+                <div class="text-xs font-bold text-white mt-0.5">突破个人 PR 重量！</div>
+                <div class="text-[10px] text-emerald-400 font-mono">卧推 100kg 达成</div>
+              </div>
+            </div>
+
+            <div class="mt-2 flex items-center justify-between text-[11px] text-slate-400">
+              <span>对应参数:</span>
+              <code id="activeBezierCode" class="text-blue-300 font-mono bg-blue-500/10 px-2 py-0.5 rounded">cubic-bezier(0.175, 0.885, 0.32, 1.275)</code>
+            </div>
+          </div>
+        </div>
+
+        <!-- Race Track Comparison (Selected Curve vs Linear) -->
+        <div class="bg-[#0B111E] rounded-2xl p-3.5 ring-1 ring-white/[0.05] space-y-3">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-semibold text-slate-300">同屏竞速对比（直观感受节奏差异）</span>
+            <span class="text-[11px] text-slate-400">虚线框为终点 (100%)，右侧留白用于观察过冲回弹</span>
+          </div>
+
+          <!-- Track 1: Active Curve -->
+          <div class="space-y-1">
+            <div class="flex justify-between text-[11px] font-mono">
+              <span id="trackActiveLabel" class="text-blue-400 font-semibold">当前选中: easeOutBack</span>
+              <span id="trackActivePercent" class="text-slate-400 tabular-nums">100%</span>
+            </div>
+            <div class="relative h-7 bg-slate-900/90 rounded-xl ring-1 ring-white/5 flex items-center px-2 overflow-hidden">
+              <!-- Start & Target Markers -->
+              <div class="absolute left-4 top-0 bottom-0 w-px bg-slate-700/60"></div>
+              <div class="absolute right-12 top-1 bottom-1 w-6 rounded-lg border border-dashed border-blue-400/40 pointer-events-none"></div>
+              <!-- Runner Puck -->
+              <div id="activePuck" class="w-5 h-5 rounded-lg bg-gradient-to-br from-blue-400 to-blue-600 shadow-lg shadow-blue-500/50 ring-2 ring-white/80 relative z-10"></div>
+            </div>
+          </div>
+
+          <!-- Track 2: Reference Curve (Default ease) -->
+          <div class="space-y-1">
+            <div class="flex items-center justify-between text-[11px] font-mono">
+              <div class="flex items-center gap-2">
+                <span class="text-slate-400">参照基准:</span>
+                <select id="compareSelect" class="bg-slate-800 text-slate-200 text-[11px] rounded px-1.5 py-0.5 ring-1 ring-white/10 focus:outline-none">
+                  <option value="linear">linear (匀速)</option>
+                  <option value="ease" selected>ease (默认曲线)</option>
+                  <option value="fastOutSlowIn">fastOutSlowIn (Material)</option>
+                  <option value="easeOutCubic">easeOutCubic</option>
+                </select>
+              </div>
+              <span class="text-slate-500">对比参照</span>
+            </div>
+            <div class="relative h-7 bg-slate-900/90 rounded-xl ring-1 ring-white/5 flex items-center px-2 overflow-hidden">
+              <div class="absolute left-4 top-0 bottom-0 w-px bg-slate-700/60"></div>
+              <div class="absolute right-12 top-1 bottom-1 w-6 rounded-lg border border-dashed border-slate-600/50 pointer-events-none"></div>
+              <div id="comparePuck" class="w-5 h-5 rounded-lg bg-slate-500/80 ring-1 ring-white/30 relative z-10"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Custom Cubic Bezier Playground -->
+        <div class="bg-slate-900/70 rounded-2xl p-3.5 ring-1 ring-white/[0.06]">
+          <div class="flex items-center justify-between mb-2.5">
+            <span class="text-xs font-bold text-slate-200 flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-purple-400"></span>
+              自定义三次贝塞尔曲线调试器 <code class="text-[11px] font-mono text-purple-300">cubic-bezier(x1, y1, x2, y2)</code>
+            </span>
+            <button id="applyCustomBezierBtn" class="px-2.5 py-1 rounded-lg bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 ring-1 ring-purple-400/30 text-[11px] font-semibold transition">
+              应用自定义参数
+            </button>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+            <div class="bg-[#0B111E] p-2 rounded-xl ring-1 ring-white/5">
+              <div class="flex justify-between text-[11px] font-mono text-slate-400">
+                <span>x1 [0~1]</span>
+                <span id="valX1" class="text-purple-300 font-bold tabular-nums">0.68</span>
+              </div>
+              <input id="inputX1" type="range" min="0" max="1" step="0.01" value="0.68" class="w-full accent-purple-500 mt-1" />
+            </div>
+            <div class="bg-[#0B111E] p-2 rounded-xl ring-1 ring-white/5">
+              <div class="flex justify-between text-[11px] font-mono text-slate-400">
+                <span>y1 (可越界)</span>
+                <span id="valY1" class="text-purple-300 font-bold tabular-nums">-0.55</span>
+              </div>
+              <input id="inputY1" type="range" min="-1" max="2" step="0.01" value="-0.55" class="w-full accent-purple-500 mt-1" />
+            </div>
+            <div class="bg-[#0B111E] p-2 rounded-xl ring-1 ring-white/5">
+              <div class="flex justify-between text-[11px] font-mono text-slate-400">
+                <span>x2 [0~1]</span>
+                <span id="valX2" class="text-purple-300 font-bold tabular-nums">0.27</span>
+              </div>
+              <input id="inputX2" type="range" min="0" max="1" step="0.01" value="0.27" class="w-full accent-purple-500 mt-1" />
+            </div>
+            <div class="bg-[#0B111E] p-2 rounded-xl ring-1 ring-white/5">
+              <div class="flex justify-between text-[11px] font-mono text-slate-400">
+                <span>y2 (可越界)</span>
+                <span id="valY2" class="text-purple-300 font-bold tabular-nums">1.55</span>
+              </div>
+              <input id="inputY2" type="range" min="-1" max="2" step="0.01" value="1.55" class="w-full accent-purple-500 mt-1" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Ready-to-copy CSS Code Preview -->
+        <div class="bg-[#070A12] rounded-2xl p-3.5 ring-1 ring-white/[0.06] font-mono text-xs overflow-x-auto">
+          <div class="text-[11px] text-slate-500 mb-1">/* 标准 CSS 过渡与关键帧动画代码 */</div>
+          <pre id="cssCodeBlock" class="text-slate-300 leading-relaxed"></pre>
+        </div>
+      </section>
+    </div>
+
+    <!-- Right Column: All 39 Curves Interactive Matrix (7 Cols on Desktop) -->
+    <div class="lg:col-span-7 flex flex-col gap-4">
+      
+      <!-- Filter & Search Bar -->
+      <div class="bg-[#111827]/90 rounded-2xl p-3.5 ring-1 ring-white/[0.07] flex flex-wrap items-center justify-between gap-3">
+        <!-- Category Filter Pills -->
+        <div class="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0" id="categoryFilterBar">
+          <button data-cat="all" class="cat-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-white text-slate-900 shadow-sm shrink-0 transition">
+            全部曲线 (39)
+          </button>
+          <button data-cat="basic" class="cat-btn px-3 py-1.5 rounded-xl text-xs font-medium bg-white/[0.06] text-slate-300 hover:bg-white/10 shrink-0 transition">
+            基础 & Material (10)
+          </button>
+          <button data-cat="power" class="cat-btn px-3 py-1.5 rounded-xl text-xs font-medium bg-white/[0.06] text-slate-300 hover:bg-white/10 shrink-0 transition">
+            正弦 / 次方缓动 (15)
+          </button>
+          <button data-cat="extreme" class="cat-btn px-3 py-1.5 rounded-xl text-xs font-medium bg-white/[0.06] text-slate-300 hover:bg-white/10 shrink-0 transition">
+            指数 / 圆形 / 过冲 Back (9)
+          </button>
+          <button data-cat="physics" class="cat-btn px-3 py-1.5 rounded-xl text-xs font-medium bg-amber-500/15 text-amber-300 ring-1 ring-amber-400/25 hover:bg-amber-500/25 shrink-0 transition">
+            ⚡ 弹性 & 反弹 (6)
+          </button>
+        </div>
+
+        <!-- Search Input -->
+        <div class="relative flex-1 min-w-[180px] max-w-xs">
+          <input id="searchInput" type="text" placeholder="搜索曲线名称，如 bounce、Out..." class="w-full h-9 pl-8 pr-3 rounded-xl bg-[#0B111E] text-xs text-slate-200 placeholder-slate-500 ring-1 ring-white/10 focus:outline-none focus:ring-blue-500" />
+          <svg class="w-3.5 h-3.5 text-slate-500 absolute left-2.5 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Cards Grid -->
+      <div id="curvesGrid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 max-h-[820px] overflow-y-auto pr-1">
+        <!-- Populated dynamically by JS -->
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Toast Notification -->
+  <div id="toastEl" class="fixed bottom-6 right-6 z-50 px-4 py-2.5 rounded-2xl bg-emerald-500 text-slate-950 font-bold text-xs shadow-xl opacity-0 pointer-events-none transition-all duration-300 translate-y-2">
+    已复制 CSS 动画代码到剪贴板！
+  </div>
+
+  <script>
+    // ==========================================
+    // 1. All 39 Classic Easing Curves Database
+    // ==========================================
+    const CURVES_DATA = [
+      // Basic & Material (10)
+      { name: 'linear', cat: 'basic', desc: '匀速运动', bezier: [0, 0, 1, 1], rawBezier: '-' },
+      { name: 'ease', cat: 'basic', desc: '先加速后减速，浏览器默认取值', bezier: [0.25, 0.1, 0.25, 1] },
+      { name: 'easeIn', cat: 'basic', desc: '加速进入（对应 CSS ease-in）', bezier: [0.42, 0, 1, 1] },
+      { name: 'easeOut', cat: 'basic', desc: '减速停靠（对应 CSS ease-out）', bezier: [0, 0, 0.58, 1] },
+      { name: 'easeInOut', cat: 'basic', desc: '前半程加速、后半程减速（ease-in-out）', bezier: [0.42, 0, 0.58, 1] },
+      { name: 'fastOutSlowIn', cat: 'basic', desc: '快速启动后缓慢收尾，Material 标准曲线', bezier: [0.4, 0, 0.2, 1] },
+      { name: 'slowMiddle', cat: 'basic', desc: '中部缓慢定格，首尾较快', bezier: [0.15, 0.85, 0.85, 0.15] },
+      { name: 'fastLinearToSlowEaseIn', cat: 'basic', desc: '起始极快接近线性，随后柔和减速', bezier: [0.18, 1, 0.04, 1] },
+      { name: 'easeInToLinear', cat: 'basic', desc: '缓慢加速后转为匀速线性', bezier: [0.67, 0.03, 0.65, 0.09] },
+      { name: 'linearToEaseOut', cat: 'basic', desc: '起始线性出击后平滑减速', bezier: [0.35, 0.91, 0.33, 0.97] },
+
+      // Sine / Quad / Cubic / Quart / Quint (15)
+      { name: 'easeInSine', cat: 'power', desc: '正弦缓入，温和加速', bezier: [0.47, 0, 0.745, 0.715] },
+      { name: 'easeOutSine', cat: 'power', desc: '正弦缓出，温和减速', bezier: [0.39, 0.575, 0.565, 1] },
+      { name: 'easeInOutSine', cat: 'power', desc: '正弦缓入缓出', bezier: [0.445, 0.05, 0.55, 0.95] },
+      { name: 'easeInQuad', cat: 'power', desc: '二次方缓入', bezier: [0.55, 0.085, 0.68, 0.53] },
+      { name: 'easeOutQuad', cat: 'power', desc: '二次方缓出', bezier: [0.25, 0.46, 0.45, 0.94] },
+      { name: 'easeInOutQuad', cat: 'power', desc: '二次方缓入缓出', bezier: [0.455, 0.03, 0.515, 0.955] },
+      { name: 'easeInCubic', cat: 'power', desc: '三次方缓入', bezier: [0.55, 0.055, 0.675, 0.19] },
+      { name: 'easeOutCubic', cat: 'power', desc: '三次方缓出（黄金通用进场曲线）', bezier: [0.215, 0.61, 0.355, 1] },
+      { name: 'easeInOutCubic', cat: 'power', desc: '三次方缓入缓出', bezier: [0.645, 0.045, 0.355, 1] },
+      { name: 'easeInQuart', cat: 'power', desc: '四次方缓入', bezier: [0.895, 0.03, 0.685, 0.22] },
+      { name: 'easeOutQuart', cat: 'power', desc: '四次方缓出', bezier: [0.165, 0.84, 0.44, 1] },
+      { name: 'easeInOutQuart', cat: 'power', desc: '四次方缓入缓出', bezier: [0.77, 0, 0.175, 1] },
+      { name: 'easeInQuint', cat: 'power', desc: '五次方缓入', bezier: [0.755, 0.05, 0.855, 0.06] },
+      { name: 'easeOutQuint', cat: 'power', desc: '五次方缓出', bezier: [0.23, 1, 0.32, 1] },
+      { name: 'easeInOutQuint', cat: 'power', desc: '五次方缓入缓出', bezier: [0.86, 0, 0.07, 1] },
+
+      // Expo / Circ / Back (9)
+      { name: 'easeInExpo', cat: 'extreme', desc: '指数缓入，起始极慢后急剧加速', bezier: [0.95, 0.05, 0.795, 0.035] },
+      { name: 'easeOutExpo', cat: 'extreme', desc: '指数缓出，急剧减速后趋于平缓', bezier: [0.19, 1, 0.22, 1] },
+      { name: 'easeInOutExpo', cat: 'extreme', desc: '指数缓入缓出', bezier: [1, 0, 0, 1] },
+      { name: 'easeInCirc', cat: 'extreme', desc: '圆弧缓入', bezier: [0.6, 0.04, 0.98, 0.335] },
+      { name: 'easeOutCirc', cat: 'extreme', desc: '圆弧缓出', bezier: [0.075, 0.82, 0.165, 1] },
+      { name: 'easeInOutCirc', cat: 'extreme', desc: '圆弧缓入缓出', bezier: [0.785, 0.135, 0.15, 0.86] },
+      { name: 'easeInBack', cat: 'extreme', desc: '缓入并向后蓄力少许再冲出（含过冲）', bezier: [0.6, -0.28, 0.735, 0.045], overshoot: true },
+      { name: 'easeOutBack', cat: 'extreme', desc: '缓出并越过终点少许再回正（含过冲）', bezier: [0.175, 0.885, 0.32, 1.275], overshoot: true },
+      { name: 'easeInOutBack', cat: 'extreme', desc: '首尾均有蓄力与过冲回弹', bezier: [0.68, -0.55, 0.265, 1.55], overshoot: true },
+
+      // Elastic & Bounce (6)
+      { name: 'elasticIn', alias: 'easeInElastic', cat: 'physics', desc: '弹性缓入，起始反向振荡后冲向终点', fnType: 'elasticIn', overshoot: true },
+      { name: 'elasticOut', alias: 'easeOutElastic', cat: 'physics', desc: '弹性缓出，越过终点来回弹簧振荡衰减', fnType: 'elasticOut', overshoot: true },
+      { name: 'elasticInOut', alias: 'easeInOutElastic', cat: 'physics', desc: '首尾均有弹簧振荡效果', fnType: 'elasticInOut', overshoot: true },
+      { name: 'bounceIn', alias: 'easeInBounce', cat: 'physics', desc: '反弹缓入，起始处多次弹跳进入', fnType: 'bounceIn' },
+      { name: 'bounceOut', alias: 'easeOutBounce', cat: 'physics', desc: '反弹缓出，撞击终点底座多次弹跳衰减', fnType: 'bounceOut' },
+      { name: 'bounceInOut', alias: 'easeInOutBounce', cat: 'physics', desc: '首尾均有重力碰撞反弹效果', fnType: 'bounceInOut' }
+    ];
+
+    // ==========================================
+    // 2. Mathematical Easing Evaluators
+    // ==========================================
+    function createCubicBezier(x1, y1, x2, y2) {
+      if (x1 === y1 && x2 === y2) return (t) => t;
+      const sampleCurveX = (t) => (((1 - 3 * x2 + 3 * x1) * t + (3 * x2 - 6 * x1)) * t + 3 * x1) * t;
+      const sampleCurveY = (t) => (((1 - 3 * y2 + 3 * y1) * t + (3 * y2 - 6 * y1)) * t + 3 * y1) * t;
+      const sampleCurveDerivativeX = (t) => (3 * (1 - 3 * x2 + 3 * x1) * t + 2 * (3 * x2 - 6 * x1)) * t + 3 * x1;
+
+      const solveCurveX = (x) => {
+        let t2 = x;
+        for (let i = 0; i < 8; i++) {
+          const x2Val = sampleCurveX(t2) - x;
+          if (Math.abs(x2Val) < 1e-6) return t2;
+          const d2 = sampleCurveDerivativeX(t2);
+          if (Math.abs(d2) < 1e-6) break;
+          t2 = t2 - x2Val / d2;
+        }
+        let t0 = 0, t1 = 1;
+        t2 = x;
+        while (t0 < t1) {
+          const x2Val = sampleCurveX(t2);
+          if (Math.abs(x2Val - x) < 1e-6) return t2;
+          if (x > x2Val) t0 = t2;
+          else t1 = t2;
+          t2 = (t1 - t0) * 0.5 + t0;
+        }
+        return t2;
+      };
+
+      return (t) => {
+        if (t <= 0) return 0;
+        if (t >= 1) return 1;
+        return sampleCurveY(solveCurveX(t));
+      };
+    }
+
+    function bounceOut(x) {
+      const n1 = 7.5625;
+      const d1 = 2.75;
+      if (x < 1 / d1) return n1 * x * x;
+      if (x < 2 / d1) return n1 * (x -= 1.5 / d1) * x + 0.75;
+      if (x < 2.5 / d1) return n1 * (x -= 2.25 / d1) * x + 0.9375;
+      return n1 * (x -= 2.625 / d1) * x + 0.984375;
+    }
+    function bounceIn(x) {
+      return 1 - bounceOut(1 - x);
+    }
+    function bounceInOut(x) {
+      return x < 0.5
+        ? (1 - bounceOut(1 - 2 * x)) / 2
+        : (1 + bounceOut(2 * x - 1)) / 2;
+    }
+
+    function elasticIn(x) {
+      const c4 = (2 * Math.PI) / 3;
+      return x === 0 ? 0 : x === 1 ? 1 : -Math.pow(2, 10 * x - 10) * Math.sin((x * 10 - 10.75) * c4);
+    }
+    function elasticOut(x) {
+      const c4 = (2 * Math.PI) / 3;
+      return x === 0 ? 0 : x === 1 ? 1 : Math.pow(2, -10 * x) * Math.sin((x * 10 - 0.75) * c4) + 1;
+    }
+    function elasticInOut(x) {
+      const c5 = (2 * Math.PI) / 4.5;
+      if (x === 0) return 0;
+      if (x === 1) return 1;
+      return x < 0.5
+        ? -(Math.pow(2, 20 * x - 10) * Math.sin((20 * x - 11.125) * c5)) / 2
+        : (Math.pow(2, -20 * x + 10) * Math.sin((20 * x - 11.125) * c5)) / 2 + 1;
+    }
+
+    const PHYSICS_FNS = { bounceIn, bounceOut, bounceInOut, elasticIn, elasticOut, elasticInOut };
+
+    function getEvaluator(curveObj) {
+      if (curveObj.fnType && PHYSICS_FNS[curveObj.fnType]) {
+        return PHYSICS_FNS[curveObj.fnType];
+      }
+      if (curveObj.bezier) {
+        return createCubicBezier(...curveObj.bezier);
+      }
+      return (t) => t;
+    }
+
+    function buildLinearCss(evalFn) {
+      const pts = [];
+      const steps = 16;
+      for (let i = 0; i <= steps; i++) {
+        const t = i / steps;
+        const y = evalFn(t);
+        pts.push(Number(y.toFixed(3)));
+      }
+      return `linear(${pts.join(', ')})`;
+    }
+
+    CURVES_DATA.forEach(c => {
+      c.evaluate = getEvaluator(c);
+      if (!c.bezier) {
+        c.linearCss = buildLinearCss(c.evaluate);
+      }
+    });
+
+    // ==========================================
+    // 3. State Management
+    // ==========================================
+    let activeCurve = CURVES_DATA.find(c => c.name === 'easeOutBack');
+    let compareCurve = CURVES_DATA.find(c => c.name === 'ease');
+    let durationMs = 1200;
+    let isLooping = true;
+    let currentCategory = 'all';
+    let searchQuery = '';
+    let simMode = 'sheet';
+    let animStartTime = performance.now();
+    let pauseBetweenLoops = 550;
+
+    // ==========================================
+    // 4. Canvas Graph Drawing Helpers
+    // ==========================================
+    function drawCurveGraph(canvas, curveObj, currentT = null, showHandles = false) {
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      const padX = showHandles ? 28 : 14;
+      const padY = showHandles ? 42 : 22;
+      const plotW = w - padX * 2;
+      const plotH = h - padY * 2;
+
+      const toX = (t) => padX + t * plotW;
+      const toY = (v) => padY + (1 - v) * plotH;
+
+      ctx.strokeStyle = 'rgba(148, 163, 184, 0.16)';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([3, 3]);
+      ctx.strokeRect(padX, padY, plotW, plotH);
+
+      ctx.beginPath();
+      ctx.moveTo(toX(0), toY(0));
+      ctx.lineTo(toX(1), toY(1));
+      ctx.strokeStyle = 'rgba(148, 163, 184, 0.12)';
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      if (showHandles && curveObj.bezier) {
+        const [x1, y1, x2, y2] = curveObj.bezier;
+        ctx.strokeStyle = 'rgba(168, 85, 247, 0.55)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(toX(0), toY(0));
+        ctx.lineTo(toX(x1), toY(y1));
+        ctx.moveTo(toX(1), toY(1));
+        ctx.lineTo(toX(x2), toY(y2));
+        ctx.stroke();
+
+        [[x1, y1], [x2, y2]].forEach(([hx, hy]) => {
+          ctx.fillStyle = '#C084FC';
+          ctx.beginPath();
+          ctx.arc(toX(hx), toY(hy), 4, 0, Math.PI * 2);
+          ctx.fill();
+        });
+      }
+
+      ctx.beginPath();
+      const steps = showHandles ? 120 : 60;
+      for (let i = 0; i <= steps; i++) {
+        const t = i / steps;
+        const y = curveObj.evaluate(t);
+        const cx = toX(t);
+        const cy = toY(y);
+        if (i === 0) ctx.moveTo(cx, cy);
+        else ctx.lineTo(cx, cy);
+      }
+      ctx.strokeStyle = curveObj.cat === 'physics' ? '#FBBF24' : '#38BDF8';
+      ctx.lineWidth = showHandles ? 3 : 2.2;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.stroke();
+
+      if (currentT !== null) {
+        const clampedT = Math.max(0, Math.min(1, currentT));
+        const valY = curveObj.evaluate(clampedT);
+        const px = toX(clampedT);
+        const py = toY(valY);
+
+        ctx.strokeStyle = 'rgba(56, 189, 248, 0.25)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(padX, py);
+        ctx.lineTo(px, py);
+        ctx.stroke();
+
+        ctx.fillStyle = '#FFFFFF';
+        ctx.beginPath();
+        ctx.arc(px, py, 5.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#0284C7';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+    }
+
+    // ==========================================
+    // 5. Render Curve Grid Cards
+    // ==========================================
+    const curvesGridEl = document.getElementById('curvesGrid');
+    let cardElements = [];
+
+    function renderGrid() {
+      curvesGridEl.innerHTML = '';
+      cardElements = [];
+
+      const filtered = CURVES_DATA.filter(item => {
+        const matchCat = currentCategory === 'all' || item.cat === currentCategory;
+        const q = searchQuery.trim().toLowerCase();
+        const matchSearch = !q || item.name.toLowerCase().includes(q) || (item.alias && item.alias.toLowerCase().includes(q)) || item.desc.toLowerCase().includes(q);
+        return matchCat && matchSearch;
+      });
+
+      filtered.forEach(curve => {
+        const isSelected = curve.name === activeCurve.name;
+        const card = document.createElement('div');
+        card.className = `curve-card group cursor-pointer rounded-2xl p-3.5 transition-all flex flex-col justify-between gap-2.5 ${
+          isSelected
+            ? 'bg-blue-600/15 ring-2 ring-blue-500 shadow-lg shadow-blue-500/10'
+            : 'bg-[#111827]/90 hover:bg-[#1E293B]/80 ring-1 ring-white/[0.07]'
+        }`;
+
+        const badgeColor = curve.cat === 'physics'
+          ? 'bg-amber-500/15 text-amber-300 ring-amber-400/20'
+          : curve.overshoot
+            ? 'bg-purple-500/15 text-purple-300 ring-purple-400/20'
+            : 'bg-slate-800 text-slate-400 ring-white/5';
+
+        const badgeText = curve.cat === 'physics'
+          ? '弹性/反弹'
+          : curve.overshoot
+            ? '过冲回弹'
+            : '贝塞尔';
+
+        card.innerHTML = `
+          <div class="flex items-start justify-between gap-2">
+            <div class="min-w-0">
+              <div class="flex items-center gap-1.5">
+                <h3 class="text-sm font-bold font-mono text-white truncate">${curve.name}</h3>
+                ${curve.alias ? `<span class="text-[10px] font-mono text-slate-400">/ ${curve.alias}</span>` : ''}
+              </div>
+              <p class="text-[11px] text-slate-400 truncate mt-0.5">${curve.desc}</p>
+            </div>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold ring-1 shrink-0 ${badgeColor}">${badgeText}</span>
+          </div>
+
+          <div class="flex items-center gap-3 bg-[#090D16]/70 rounded-xl p-2 ring-1 ring-white/[0.04]">
+            <canvas width="72" height="54" class="mini-canvas shrink-0"></canvas>
+            <div class="flex-1 min-w-0 space-y-1.5">
+              <div class="text-[10px] font-mono text-slate-500 truncate">
+                ${curve.bezier ? `cubic-bezier(${curve.bezier.join(', ')})` : 'CSS linear() 多点拟合'}
+              </div>
+              <!-- Mini Live Track -->
+              <div class="relative h-4 bg-slate-900 rounded-lg flex items-center px-1.5 overflow-hidden ring-1 ring-white/5">
+                <div class="absolute right-5 top-0.5 bottom-0.5 w-3 border border-dashed border-slate-600/60 rounded"></div>
+                <div class="mini-puck w-3 h-3 rounded-full ${curve.cat === 'physics' ? 'bg-amber-400' : 'bg-blue-400'} shadow-sm"></div>
+              </div>
+            </div>
+          </div>
+        `;
+
+        const miniCanvas = card.querySelector('.mini-canvas');
+        drawCurveGraph(miniCanvas, curve, null, false);
+
+        const miniPuck = card.querySelector('.mini-puck');
+        cardElements.push({ curve, puck: miniPuck });
+
+        card.addEventListener('click', () => {
+          selectCurve(curve);
+        });
+
+        curvesGridEl.appendChild(card);
+      });
+    }
+
+    // ==========================================
+    // 6. Update Active Inspector Panel
+    // ==========================================
+    function selectCurve(curve) {
+      activeCurve = curve;
+      animStartTime = performance.now();
+
+      document.getElementById('activeCurveName').textContent = curve.alias
+        ? `${curve.name} / ${curve.alias}`
+        : curve.name;
+      document.getElementById('activeCurveDesc').textContent = curve.desc;
+      document.getElementById('trackActiveLabel').textContent = `当前选中: ${curve.name}`;
+
+      const catBadge = document.getElementById('activeCategoryBadge');
+      if (curve.cat === 'physics') {
+        catBadge.textContent = '弹性与反弹曲线';
+        catBadge.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-500/15 text-amber-300 ring-1 ring-amber-400/20';
+      } else if (curve.cat === 'custom') {
+        catBadge.textContent = '自定义三次贝塞尔';
+        catBadge.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-purple-500/15 text-purple-300 ring-1 ring-purple-400/20';
+      } else {
+        catBadge.textContent = '内置标准曲线';
+        catBadge.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-blue-500/15 text-blue-300 ring-1 ring-blue-400/20';
+      }
+
+      const overBadge = document.getElementById('activeOvershootBadge');
+      if (curve.overshoot) {
+        overBadge.classList.remove('hidden');
+      } else {
+        overBadge.classList.add('hidden');
+      }
+
+      const bezierCodeEl = document.getElementById('activeBezierCode');
+      let cssEasingValue = '';
+      if (curve.bezier) {
+        const bStr = `cubic-bezier(${curve.bezier.join(', ')})`;
+        cssEasingValue = curve.rawBezier === '-' ? 'linear' : bStr;
+        bezierCodeEl.textContent = curve.rawBezier === '-' ? 'linear (匀速无控制点)' : bStr;
+        const [x1, y1, x2, y2] = curve.bezier;
+        document.getElementById('inputX1').value = x1;
+        document.getElementById('inputY1').value = y1;
+        document.getElementById('inputX2').value = x2;
+        document.getElementById('inputY2').value = y2;
+        document.getElementById('valX1').textContent = x1;
+        document.getElementById('valY1').textContent = y1;
+        document.getElementById('valX2').textContent = x2;
+        document.getElementById('valY2').textContent = y2;
+      } else {
+        cssEasingValue = curve.linearCss || buildLinearCss(curve.evaluate);
+        bezierCodeEl.textContent = `CSS linear() 物理拟合`;
+      }
+
+      document.getElementById('cssCodeBlock').textContent =
+`.animated-element {
+  /* 曲线名称: ${curve.name} (${curve.desc}) */
+  transition-property: transform, opacity;
+  transition-duration: ${durationMs}ms;
+  transition-timing-function: ${cssEasingValue};
+}`;
+
+      renderGrid();
+    }
+
+    // ==========================================
+    // 7. Master Animation Loop
+    // ==========================================
+    const mainGraphCanvas = document.getElementById('mainGraphCanvas');
+    const activePuckEl = document.getElementById('activePuck');
+    const comparePuckEl = document.getElementById('comparePuck');
+    const liveProgressTextEl = document.getElementById('liveProgressText');
+    const trackActivePercentEl = document.getElementById('trackActivePercent');
+
+    const simSheetEl = document.getElementById('simSheetEl');
+    const simCardEl = document.getElementById('simCardEl');
+    const simScaleEl = document.getElementById('simScaleEl');
+
+    function animateLoop(now) {
+      if (!document.hidden) {
+        const elapsed = now - animStartTime;
+        const totalCycle = durationMs + pauseBetweenLoops;
+
+        let t = 0;
+        if (isLooping) {
+          const cycleTime = elapsed % totalCycle;
+          t = Math.min(1, cycleTime / durationMs);
+        } else {
+          t = Math.min(1, elapsed / durationMs);
+        }
+
+        const activeProgress = activeCurve.evaluate(t);
+        const compareProgress = compareCurve.evaluate(t);
+
+        // 1. Update Main Graph
+        drawCurveGraph(mainGraphCanvas, activeCurve, t, true);
+        liveProgressTextEl.textContent = `t=${t.toFixed(2)} | y=${activeProgress.toFixed(2)}`;
+        trackActivePercentEl.textContent = `${Math.round(activeProgress * 100)}%`;
+
+        // 2. Update Race Track Pucks
+        const trackWidth = activePuckEl.parentElement.clientWidth - 76;
+        activePuckEl.style.transform = `translateX(${8 + activeProgress * trackWidth}px)`;
+        comparePuckEl.style.transform = `translateX(${8 + compareProgress * trackWidth}px)`;
+
+        // 3. Update Mini UI Simulator
+        if (simMode === 'sheet') {
+          const offsetPercent = (1 - activeProgress) * 100;
+          simSheetEl.style.transform = `translateY(${offsetPercent}%)`;
+        } else if (simMode === 'card') {
+          const offsetX = (1 - activeProgress) * -115;
+          simCardEl.style.transform = `translate(${offsetX}%, -50%)`;
+        } else if (simMode === 'scale') {
+          const scaleVal = Math.max(0, activeProgress);
+          simScaleEl.style.transform = `translateY(-50%) scale(${scaleVal})`;
+        }
+
+        // 4. Update All Visible Mini Cards
+        cardElements.forEach(({ curve, puck }) => {
+          const p = curve.evaluate(t);
+          const miniTrackW = puck.parentElement.clientWidth - 36;
+          puck.style.transform = `translateX(${p * miniTrackW}px)`;
+        });
+      }
+
+      requestAnimationFrame(animateLoop);
+    }
+
+    // ==========================================
+    // 8. Event Listeners & Interactions
+    // ==========================================
+    const durationSlider = document.getElementById('durationSlider');
+    const durationLabel = document.getElementById('durationLabel');
+    durationSlider.addEventListener('input', (e) => {
+      durationMs = parseInt(e.target.value, 10);
+      durationLabel.textContent = `${durationMs}ms`;
+      selectCurve(activeCurve);
+    });
+
+    const loopToggleBtn = document.getElementById('loopToggleBtn');
+    const loopDot = document.getElementById('loopDot');
+    loopToggleBtn.addEventListener('click', () => {
+      isLooping = !isLooping;
+      if (isLooping) {
+        animStartTime = performance.now();
+        loopToggleBtn.className = 'h-9 px-3.5 rounded-xl bg-blue-500/15 text-blue-300 ring-1 ring-blue-400/30 text-xs font-semibold flex items-center gap-1.5 hover:bg-blue-500/25 transition';
+        loopDot.className = 'w-2 h-2 rounded-full bg-blue-400 animate-pulse';
+      } else {
+        loopToggleBtn.className = 'h-9 px-3.5 rounded-xl bg-slate-800 text-slate-400 ring-1 ring-white/10 text-xs font-semibold flex items-center gap-1.5 hover:bg-slate-700 transition';
+        loopDot.className = 'w-2 h-2 rounded-full bg-slate-500';
+      }
+    });
+
+    document.getElementById('replayAllBtn').addEventListener('click', () => {
+      animStartTime = performance.now();
+    });
+
+    document.getElementById('compareSelect').addEventListener('change', (e) => {
+      const found = CURVES_DATA.find(c => c.name === e.target.value);
+      if (found) compareCurve = found;
+      animStartTime = performance.now();
+    });
+
+    document.querySelectorAll('.sim-mode-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        simMode = btn.dataset.sim;
+        document.querySelectorAll('.sim-mode-btn').forEach(b => {
+          b.className = 'sim-mode-btn px-2 py-0.5 rounded-md text-[11px] font-medium text-slate-400 hover:text-white transition';
+        });
+        btn.className = 'sim-mode-btn px-2 py-0.5 rounded-md text-[11px] font-semibold bg-blue-600 text-white transition';
+
+        simSheetEl.classList.toggle('hidden', simMode !== 'sheet');
+        simCardEl.classList.toggle('hidden', simMode !== 'card');
+        simScaleEl.classList.toggle('hidden', simMode !== 'scale');
+        animStartTime = performance.now();
+      });
+    });
+
+    document.querySelectorAll('.cat-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        currentCategory = btn.dataset.cat;
+        document.querySelectorAll('.cat-btn').forEach(b => {
+          b.className = 'cat-btn px-3 py-1.5 rounded-xl text-xs font-medium bg-white/[0.06] text-slate-300 hover:bg-white/10 shrink-0 transition';
+        });
+        btn.className = 'cat-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-white text-slate-900 shadow-sm shrink-0 transition';
+        renderGrid();
+      });
+    });
+
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      searchQuery = e.target.value;
+      renderGrid();
+    });
+
+    const bezierInputs = ['inputX1', 'inputY1', 'inputX2', 'inputY2'];
+    const bezierVals = ['valX1', 'valY1', 'valX2', 'valY2'];
+
+    function applyCustomBezier() {
+      const coords = bezierInputs.map((id, idx) => {
+        const v = parseFloat(document.getElementById(id).value);
+        document.getElementById(bezierVals[idx]).textContent = v.toFixed(2);
+        return v;
+      });
+      const hasOvershoot = coords[1] < 0 || coords[1] > 1 || coords[3] < 0 || coords[3] > 1;
+      const customObj = {
+        name: `cubic-bezier(${coords.join(', ')})`,
+        cat: 'custom',
+        desc: '自定义三次贝塞尔曲线参数',
+        bezier: coords,
+        overshoot: hasOvershoot,
+        evaluate: createCubicBezier(...coords)
+      };
+      selectCurve(customObj);
+    }
+
+    bezierInputs.forEach(id => {
+      document.getElementById(id).addEventListener('input', applyCustomBezier);
+    });
+    document.getElementById('applyCustomBezierBtn').addEventListener('click', applyCustomBezier);
+
+    document.getElementById('copyCodeBtn').addEventListener('click', () => {
+      const code = document.getElementById('cssCodeBlock').textContent;
+      const textarea = document.createElement('textarea');
+      textarea.value = code;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+
+      const toast = document.getElementById('toastEl');
+      toast.classList.remove('opacity-0', 'translate-y-2');
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+      }, 2200);
+    });
+
+    window.onload = () => {
+      selectCurve(activeCurve);
+      requestAnimationFrame(animateLoop);
+    };
+  </script>
+</body>
+</html>

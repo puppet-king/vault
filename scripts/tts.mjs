@@ -63,6 +63,8 @@ function cleanMarkdownForTts(raw) {
   }
 
   body = body
+    .replace(/<!--\s*tts-ignore-start\s*-->[\s\S]*?<!--\s*tts-ignore-end\s*-->/g, '')
+    .replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1>/gi, '')
     .replace(/^>\s*(?:原文：|\[(?:阅读|返回)).*$/gm, '')
     .replace(/```[\s\S]*?```/g, '')
     .replace(/\[!\[[^\]]*\]\([^)]+\)\]\([^)]+\)/g, '')

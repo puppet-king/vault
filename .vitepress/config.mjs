@@ -160,6 +160,12 @@ export default defineConfig({
     nav: [
       { text: '首页', link: '/' },
       {
+        text: '随笔',
+        items: [
+          { text: 'CSS 动画缓动曲线完全指南', link: '/posts/css-easing/' }
+        ]
+      },
+      {
         text: '译文',
         items: [
           { text: '知识拆解二十条准则', link: '/translations/twenty-rules/' },

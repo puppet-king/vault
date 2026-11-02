@@ -3,6 +3,7 @@ import { onMounted, watch, nextTick } from 'vue';
 import { useRoute, useData } from 'vitepress';
 import 'heti/umd/heti.min.css';
 import { data as posts } from './posts.data.mjs';
+import CssEasingDemo from './components/CssEasingDemo.vue';
 import './custom.css';
 
 const WORD_RE = /[\u4e00-\u9fa5]|[a-zA-Z0-9]+/g;
@@ -17,6 +18,9 @@ const fmtTime = s => {
 
 export default {
   extends: DefaultTheme,
+  enhanceApp({ app }) {
+    app.component('CssEasingDemo', CssEasingDemo);
+  },
   setup() {
     const route = useRoute();
     const { theme } = useData();

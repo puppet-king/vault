@@ -366,4 +366,12 @@
     max-height: none !important;
     overflow: visible !important;
   }
+
+  .vp-doc table,
+  .vp-doc blockquote,
+  .vp-doc .custom-block,
+  .ced-card {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
 }
