@@ -51,8 +51,12 @@ for (const url of urls) {
   let enBody = raw
     .replace(/<!--[\s\S]*?-->/g, '')
     .replace(/<script[\s\S]*?<\/script>/gi, '')
-    .replace(/<a name="([^"]+)"><\/a>/gi, '<span id="$1"></span>')
+    .replace(/\[?\s*<a name="([^"]+)">([\s\S]*?)<\/a>\s*\]?/gi, (_, id, inner) => {
+      const txt = inner.replace(/<[^>]+>/g, '').trim();
+      return txt ? `<span id="${id}">**[${txt}]**</span> ` : `<span id="${id}"></span>`;
+    })
     .replace(/<img[^>]*src="([^"]+)"[^>]*alt="([^"]*)"[^>]*\/?>/gi, (_, src, alt) => {
+      if (src.includes('turbifycdn.com/aah/paulgraham/')) return '';
       const fullSrc = src.startsWith('http') ? src : new URL(src, parsedUrl.origin).href;
       return `![${alt}](${fullSrc})`;
     })

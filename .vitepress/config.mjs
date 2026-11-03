@@ -190,12 +190,13 @@ export default defineConfig({
       {
         text: '随笔',
         items: [
-          { text: 'CSS 动画缓动曲线完全指南', link: '/posts/css-easing/' }
+          { text: 'CSS 动画缓动曲线指南', link: '/posts/css-easing/' }
         ]
       },
       {
         text: '译文',
         items: [
+          { text: '如何做出卓越的工作', link: '/translations/greatwork/' },
           { text: '知识拆解二十条准则', link: '/translations/twenty-rules/' },
           { text: '用间隔重复记住编程语言', link: '/translations/srs/' },
           { text: '品牌时代', link: '/translations/brandage/' },
