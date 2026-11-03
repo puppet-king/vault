@@ -16,6 +16,14 @@ from PIL import Image
 
 
 def save_best_webp(im: Image.Image, out_path: str) -> int:
+    if getattr(im, "is_animated", False) and getattr(im, "n_frames", 1) > 1:
+        buf_anim = io.BytesIO()
+        im.save(buf_anim, "WEBP", save_all=True, quality=80, method=4)
+        data = buf_anim.getvalue()
+        with open(out_path, "wb") as f:
+            f.write(data)
+        return len(data)
+
     mode = "RGBA" if ("A" in im.mode or "transparency" in im.info) else "RGB"
     im_conv = im.convert(mode)
 

@@ -196,6 +196,7 @@ export default defineConfig({
       {
         text: '译文',
         items: [
+          { text: '顺应 Web 的纹理', link: '/translations/the-webs-grain/' },
           { text: '多元思维模型大全', link: '/translations/mental-models/' },
           { text: '人生的尾声', link: '/translations/the-tail-end/' },
           { text: '如何做出卓越的工作', link: '/translations/greatwork/' },
