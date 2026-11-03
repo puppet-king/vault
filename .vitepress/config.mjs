@@ -139,16 +139,44 @@ export default defineConfig({
   markdown: {
     math: true,
     config(md) {
-      // 支持 ==荧光笔高亮== 语法
+      // 支持 ==荧光笔高亮== 语法（兼容内部含行内代码）及修复中文括号旁 **加粗** 失效问题
+      const applyPairTag = (children, marker, openTag, closeTag) => {
+        let count = 0;
+        for (const child of children) {
+          if (child.type === 'text' || child.type === 'html_inline') {
+            count += child.content.split(marker).length - 1;
+          }
+        }
+        if (count < 2) return;
+        let pairsLeft = Math.floor(count / 2) * 2;
+        let isOpen = false;
+        for (const child of children) {
+          if ((child.type === 'text' || child.type === 'html_inline') && child.content.includes(marker) && pairsLeft > 0) {
+            child.type = 'html_inline';
+            const parts = child.content.split(marker);
+            let out = '';
+            for (let i = 0; i < parts.length; i++) {
+              out += parts[i];
+              if (i < parts.length - 1) {
+                if (pairsLeft > 0) {
+                  out += isOpen ? closeTag : openTag;
+                  isOpen = !isOpen;
+                  pairsLeft--;
+                } else {
+                  out += marker;
+                }
+              }
+            }
+            child.content = out;
+          }
+        }
+      };
+
       md.core.ruler.after('inline', 'mark_highlight', state => {
         for (const token of state.tokens) {
           if (token.type !== 'inline' || !token.children) continue;
-          for (const child of token.children) {
-            if (child.type === 'text' && child.content.includes('==')) {
-              child.type = 'html_inline';
-              child.content = child.content.replace(/==([^=\n]+)==/g, '<mark class="vp-mark">$1</mark>');
-            }
-          }
+          applyPairTag(token.children, '==', '<mark class="vp-mark">', '</mark>');
+          applyPairTag(token.children, '**', '<strong>', '</strong>');
         }
       });
     }

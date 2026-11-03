@@ -107,12 +107,15 @@ description: 知识库（Vault）外文长文抓取、外链图片本地化、�
 
 ---
 
-## 阶段五：双语 TTS 语音合成与构建校验（Stage 5: TTS Audio & Build Verification）
+## 阶段五：构建校验与按需 TTS 语音合成（Stage 5: Build Verification & On-Demand TTS Audio）
 
-1. **双语语音合成与七牛云上传**：
-   - 运行 `node scripts/tts.mjs`（或直接进入阶段六运行 `pnpm deploy`）。
+1. **初稿阶段先跳过 TTS（重要）**：
+   - **在用户尚未确认文章/译文定稿前，先不要运行 `node scripts/tts.mjs` 生成语音**（因为文章内容后续可能还要调整）。
+   - 初稿预览或修改迭代时，使用 `pnpm build` 或 `node scripts/deploy.mjs --no-tts` 先发布网页供用户审阅。
+2. **定稿确认后执行双语语音合成与七牛云上传**：
+   - 待用户确认需要生成语音后，再运行 `node scripts/tts.mjs`（或 `pnpm deploy`）。
    - 脚本会自动清洗 Markdown 标记，调用本机 `edge-tts` 为中文版（`zh-CN-YunxiNeural`）和英文版（`en-US-AndrewNeural`）合成自然神经语音，直连上传至七牛云 CDN（`https://static.juqingsong.cn/vault/audio/translations-<slug>.mp3`），并将 `{ hash, duration }` 写入 `.vitepress/cache/tts-uploaded.json`。
-2. **构建检查**：
+3. **构建检查**：
    - 确认 `pnpm build` 无任何 Vue 模板解析错误或死链报错，且自动生成最新的 `sitemap.xml`、`rss.xml`、`llms.txt` 与 `llms-full.txt`。
 
 ---

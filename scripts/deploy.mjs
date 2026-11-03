@@ -18,8 +18,12 @@ if (!KEY || !HOST) {
 
 const run = (cmd, opts = { stdio: 'inherit' }) => execSync(cmd, opts);
 
-console.log('1/4 Syncing article TTS audio to Qiniu...');
-run('node scripts/tts.mjs');
+if (process.argv.includes('--no-tts') || process.argv.includes('--skip-tts')) {
+  console.log('1/4 Skipping TTS audio sync (--no-tts)...');
+} else {
+  console.log('1/4 Syncing article TTS audio to Qiniu...');
+  run('node scripts/tts.mjs');
+}
 
 console.log('2/4 Building VitePress site...');
 run('pnpm build');

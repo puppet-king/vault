@@ -126,10 +126,10 @@ const PRESETS = {
         id: 'easeOutCubic',
         name: '3级 · easeOutCubic（三次方）',
         css: 'cubic-bezier(0.215, 0.61, 0.355, 1)',
-        tag: '⭐ 黄金万金油 · 通用卡片/模态框',
+        tag: '最常用 · 通用卡片/模态框',
         color: '#2563eb',
         eval: createCubicBezier(0.215, 0.61, 0.355, 1),
-        desc: '爆发力与刹车手感的最佳平衡点，适合 80% 的卡片入场、居中模态框弹出与通知横幅。'
+        desc: '启动速度与收尾减速比较均衡，适合大多数卡片入场、居中模态框弹出与通知横幅。'
       },
       {
         id: 'easeOutQuart',
@@ -186,10 +186,10 @@ const PRESETS = {
         id: 'elasticOut',
         name: 'elasticOut（物理弹簧振荡）',
         css: 'linear(0, 1.15 20%, 0.93 40%, 1.03 60%, 0.99 80%, 1)',
-        tag: '⚠️ 多次往复振荡 · 慎用于大容器',
+        tag: '多次往复振荡 · 适合小图标',
         color: '#d97706',
         eval: elasticOut,
-        desc: '围绕 100% 终点高频正弦衰减摆动，适合点赞心形放大、图标摇晃提醒，严禁用于大面积弹窗或文字块。'
+        desc: '围绕 100% 终点多次正弦衰减摆动，适合点赞心形放大、消息图标摇晃提醒，不建议用于大面积弹窗。'
       },
       {
         id: 'bounceOut',
