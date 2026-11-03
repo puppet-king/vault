@@ -196,6 +196,7 @@ export default defineConfig({
       {
         text: '译文',
         items: [
+          { text: '多元思维模型大全', link: '/translations/mental-models/' },
           { text: '人生的尾声', link: '/translations/the-tail-end/' },
           { text: '如何做出卓越的工作', link: '/translations/greatwork/' },
           { text: '知识拆解二十条准则', link: '/translations/twenty-rules/' },
