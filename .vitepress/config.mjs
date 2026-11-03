@@ -196,6 +196,7 @@ export default defineConfig({
       {
         text: '译文',
         items: [
+          { text: '人生的尾声', link: '/translations/the-tail-end/' },
           { text: '如何做出卓越的工作', link: '/translations/greatwork/' },
           { text: '知识拆解二十条准则', link: '/translations/twenty-rules/' },
           { text: '用间隔重复记住编程语言', link: '/translations/srs/' },
