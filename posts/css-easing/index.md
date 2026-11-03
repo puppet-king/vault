@@ -1,6 +1,6 @@
 ---
 title: CSS 动画缓动曲线指南：从物理直觉到 39 种曲线选型
-date: 2026-04-12
+date: 2026-11-03
 category: 技术随笔
 tags:
   - CSS
