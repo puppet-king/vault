@@ -196,6 +196,7 @@ export default defineConfig({
       {
         text: '译文',
         items: [
+          { text: '别自称“程序员”', link: '/translations/dont-call-yourself-a-programmer/' },
           { text: '一千个铁杆粉丝', link: '/translations/1000-true-fans/' },
           { text: '要么“太棒了”，要么“不”', link: '/translations/hellyeah/' },
           { text: '世界运转的微小法则', link: '/translations/little-ways/' },
