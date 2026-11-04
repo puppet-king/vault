@@ -196,6 +196,7 @@ export default defineConfig({
       {
         text: '译文',
         items: [
+          { text: '一千个铁杆粉丝', link: '/translations/1000-true-fans/' },
           { text: '要么“太棒了”，要么“不”', link: '/translations/hellyeah/' },
           { text: '世界运转的微小法则', link: '/translations/little-ways/' },
           { text: '顺应 Web 的纹理', link: '/translations/the-webs-grain/' },
