@@ -196,6 +196,7 @@ export default defineConfig({
       {
         text: '译文',
         items: [
+          { text: '深度工作的苦与乐', link: '/translations/deep-work/' },
           { text: '杰维斯法则', link: '/translations/gervais-principle/' },
           { text: '如何不靠运气变得富有', link: '/translations/rich/' },
           { text: '别自称“程序员”', link: '/translations/dont-call-yourself-a-programmer/' },
