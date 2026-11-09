@@ -171,6 +171,22 @@
   text-align: left;
 }
 
+.vp-work-more {
+  margin-top: auto;
+  padding-top: 0.65rem;
+  font-size: 0.84rem;
+  font-weight: 500;
+  color: var(--vp-c-brand-1);
+  text-decoration: none;
+  align-self: flex-end;
+  transition: opacity 0.15s ease;
+}
+
+.vp-work-more:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
 .vp-print-btn {
   margin-left: 0.75rem;
   padding: 0.15rem 0.55rem;

@@ -16,5 +16,12 @@ import { works } from './.vitepress/theme/works.mjs'
     <div class="vp-work-name">{{ item.name }}</div>
     <div v-if="item.fullName" class="vp-work-fullname">{{ item.fullName }}</div>
     <div v-if="item.desc" class="vp-work-desc">{{ item.desc }}</div>
+    <a
+      v-if="item.link"
+      :href="item.link"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="vp-work-more"
+    >查看更多 →</a>
   </div>
 </div>

@@ -4,7 +4,8 @@ export const works = [
     name: '信任的进化',
     fullName: '博弈论互动指南-信任的进化',
     desc: '为什么有时合作能共赢？通过趣味模拟实验，亲手推演不同策略的交锋，用直观有趣的方式读懂博弈论与信任的本质。',
-    qrcode: '/works/trust.webp'
+    qrcode: '/works/trust.webp',
+    link: 'https://mp.weixin.qq.com/s/EINFsm8XLqzWHuA23gwiaQ'
   },
   {
     name: '番茄钟',
