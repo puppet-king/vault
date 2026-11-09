@@ -196,6 +196,7 @@ export default defineConfig({
       {
         text: '译文',
         items: [
+          { text: '打造一亿美元公司的五种方式', link: '/translations/five-ways-to-100m/' },
           { text: '抽象漏洞法则', link: '/translations/leaky-abstractions/' },
           { text: '十年学会编程', link: '/translations/21-days/' },
           { text: '金钱心理学', link: '/translations/the-psychology-of-money/' },
