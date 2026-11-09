@@ -196,6 +196,7 @@ export default defineConfig({
       {
         text: '译文',
         items: [
+          { text: '迪特·拉姆斯：好设计的十项原则', link: '/translations/dieter-rams-10-principles/' },
           { text: '乔尔测试：12 步写出好代码', link: '/translations/joel-test/' },
           { text: '好产品经理，坏产品经理', link: '/translations/good-pm-bad-pm/' },
           { text: '打造一亿美元公司的五种方式', link: '/translations/five-ways-to-100m/' },
