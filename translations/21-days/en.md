@@ -8,7 +8,9 @@
 
 Walk into any bookstore, and you'll see how to *Teach Yourself Java in 24 Hours* alongside endless variations offering to teach C, SQL, Ruby, Algorithms, and so on in a few days or hours. The Amazon advanced search for `[title: teach, yourself, hours, since: 2000]` found 512 such books. Of the top ten, nine are programming books (the other is about bookkeeping). Similar results come from replacing "teach yourself" with "learn" or "hours" with "days."
 
-The conclusion is that either people are in a big rush to learn about programming, or that programming is somehow fabulously easier to learn than anything else. Felleisen *et al.* give a nod to this trend in their book [*How to Design Programs*](http://www.ccs.neu.edu/home/matthias/HtDP2e/index.html), when they say "Bad programming is easy. *Idiots* can learn it in *21 days*, even if they are *dummies*." The Abstruse Goose comic also had [their take](http://abstrusegoose.com/249).
+The conclusion is that either people are in a big rush to learn about programming, or that programming is somehow fabulously easier to learn than anything else. Felleisen *et al.* give a nod to this trend in their book [*How to Design Programs*](http://www.ccs.neu.edu/home/matthias/HtDP2e/index.html), when they say "Bad programming is easy. *Idiots* can learn it in *21 days*, even if they are *dummies*." The Abstruse Goose comic also had [their take](http://abstrusegoose.com/249):
+
+![How to Teach Yourself C++ in 21 Days (Abstruse Goose)](/images/21-days/abstruse-goose-cpp-21-days.webp)
 
 Let's analyze what a title like [*Teach Yourself C++ in 24 Hours*](http://www.amazon.com/Sams-Teach-Yourself-Hours-5th/dp/0672333317/) could mean:
 

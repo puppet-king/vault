@@ -16,7 +16,9 @@ description: "Google 研究总监彼得·诺维格传世名篇：为什么“21�
 
 走进任何一家书店，你都会看到一整排《24小时自学 Java》（*Teach Yourself Java in 24 Hours*）之类的畅销书，旁边还摆满了五花八门的同类变体，号称能在短短几天甚至几个小时内教会你 C 语言、SQL、Ruby 和算法。如果你去亚马逊的高级搜索里输入条件 `[书名包含: teach, yourself, hours, 出版年份晚于: 2000]`，足足能搜出 512 本这样的书。在排名前十的书里，有九本都是编程书（剩下唯一那本是教会计记账的）。要是把搜索词里的“自学（teach yourself）”换成“学会（learn）”，或者把“小时（hours）”换成“天（days）”，搜出来的结果也大同小异。
 
-由此只能得出两个结论：要么是世人对于学编程这件事火急火燎到了极点，要么就是编程不知怎么回事，比世上其他任何手艺都好学得离谱。马蒂亚斯·费莱森（Felleisen）等人在他们的名著《[程序设计方法](http://www.ccs.neu.edu/home/matthias/HtDP2e/index.html)》（*How to Design Programs*）中，就对这种浮躁风气给出了一针见血的嘲讽：==“写出烂代码确实很容易。哪怕是彻头彻尾的**白痴（Idiots）**，也能在 **21 天**内学会怎么写烂代码，就算他们是纯正的**傻瓜（Dummies）**也不例外。”==（注：此处连用英文畅销速成书系 *Complete Idiot's Guide* 与 *For Dummies* 的双关梗。）著名极客漫画《Abstruse Goose》也画过[一幅令人捧腹的漫画](http://abstrusegoose.com/249)来吐槽这件事（漫画里想要在 21 天学会 C++ 的唯一办法，是在第 21 天造出一台时光机穿越回年轻时代）。
+由此只能得出两个结论：要么是世人对于学编程这件事火急火燎到了极点，要么就是编程不知怎么回事，比世上其他任何手艺都好学得离谱。马蒂亚斯·费莱森（Felleisen）等人在他们的名著《[程序设计方法](http://www.ccs.neu.edu/home/matthias/HtDP2e/index.html)》（*How to Design Programs*）中，就对这种浮躁风气给出了一针见血的嘲讽：==“写出烂代码确实很容易。哪怕是彻头彻尾的**白痴（Idiots）**，也能在 **21 天**内学会怎么写烂代码，就算他们是纯正的**傻瓜（Dummies）**也不例外。”==（注：此处连用英文畅销速成书系 *Complete Idiot's Guide* 与 *For Dummies* 的双关梗。）著名极客漫画《Abstruse Goose》也画过[一幅令人捧腹的漫画](http://abstrusegoose.com/249)来吐槽这件事（漫画里想要在 21 天学会 C++ 的唯一办法，是在第 14611 天造出一台时光机穿越回第 21 天替换掉年轻时的自己）：
+
+![如何在 21 天内自学 C++（Abstruse Goose 经典漫画）](/images/21-days/abstruse-goose-cpp-21-days.webp)
 
 不妨让我们认真拆解一下，像《[24小时自学 C++](http://www.amazon.com/Sams-Teach-Yourself-Hours-5th/dp/0672333317/)》这样的书名究竟能意味着什么：
 
