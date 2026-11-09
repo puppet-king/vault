@@ -196,6 +196,8 @@ export default defineConfig({
       {
         text: '译文',
         items: [
+          { text: '十年学会编程', link: '/translations/21-days/' },
+          { text: '金钱心理学', link: '/translations/the-psychology-of-money/' },
           { text: '默认存活还是默认死亡？', link: '/translations/aord/' },
           { text: '深度工作的苦与乐', link: '/translations/deep-work/' },
           { text: '杰维斯法则', link: '/translations/gervais-principle/' },
