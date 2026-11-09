@@ -1,6 +1,6 @@
 ---
 title: 超线性回报（Superlinear Returns）
-date: 2023-10-01
+date: 2026-10-28
 category: 译文
 tags: [PaulGraham, 译文, 创业, 复利, 思维模型]
 description: Paul Graham 探讨为什么表现带来的回报往往是超线性的，以及指数级增长与阈值如何塑造我们的世界。

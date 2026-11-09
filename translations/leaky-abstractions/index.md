@@ -1,6 +1,6 @@
 ---
 title: "抽象漏洞法则"
-date: 2002-11-11
+date: 2026-11-09
 category: 译文
 tags: ["Joel Spolsky", "译文", "软件工程", "计算机科学", "抽象漏洞法则", "底层原理"]
 description: "Stack Overflow 与 Trello 联合创始人乔尔·斯波尔斯基（Joel Spolsky）传世名篇：提出软件工程界最著名的“抽象漏洞法则（The Law of Leaky Abstractions）”：所有非平凡的抽象，在某种程度上都是有漏洞的。抽象只能节省我们干活的时间，却永远省不了我们学习底层原理的时间。"

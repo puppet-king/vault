@@ -1,6 +1,6 @@
 ---
 title: 何时去做自己热爱的事（When To Do What You Love）
-date: 2024-09-01
+date: 2026-10-29
 category: 译文
 tags: [PaulGraham, 译文, 职业选择, 创业, 个人成长]
 description: 是否应该“追随你的热情”并不能用简单的是或否来回答；但在不确定时保持处在上风口，以及想要做出真正卓越的工作时，答案无比清晰。

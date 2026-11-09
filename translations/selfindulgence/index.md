@@ -1,6 +1,6 @@
 ---
 title: 如何亏掉时间与金钱（How to Lose Time and Money）
-date: 2010-07-01
+date: 2026-10-29
 category: 译文
 tags: [PaulGraham, 译文, 时间管理, 财富, 认知]
 description: 挥霍很难不知不觉地败光家产，真正让人倾家荡产的是糟糕的投资；同样，浪费时间最危险的方式也不是贪图享乐，而是做着看似正经的“假工作”。

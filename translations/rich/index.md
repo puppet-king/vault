@@ -1,6 +1,7 @@
 ---
 title: "如何不靠运气变得富有"
-date: 2019-12-28
+date: 2026-11-05
+category: 译文
 tags: ["经典翻译", "Naval Ravikant", "财富创造", "杠杆思维", "长期主义", "商业哲学"]
 description: "硅谷传奇投资人、AngelList 创始人 Naval Ravikant 现象级推文风暴与播客全集精译：拆解专长、责任、代码与媒体杠杆以及判断力的财富复利公式。"
 ---
