@@ -196,6 +196,7 @@ export default defineConfig({
       {
         text: '译文',
         items: [
+          { text: '你脑海中的头号念头', link: '/translations/top-idea/' },
           { text: '创造者与管理者的时间表', link: '/translations/makersschedule/' },
           { text: '迪特·拉姆斯：好设计的十项原则', link: '/translations/dieter-rams-10-principles/' },
           { text: '乔尔测试：12 步写出好代码', link: '/translations/joel-test/' },
