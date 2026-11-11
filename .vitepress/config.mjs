@@ -196,6 +196,7 @@ export default defineConfig({
       {
         text: '译文',
         items: [
+          { text: '如何反驳（反驳金字塔）', link: '/translations/disagree/' },
           { text: '如何制定真正有效的设计原则', link: '/translations/developing-design-principles/' },
           { text: '你脑海中的头号念头', link: '/translations/top-idea/' },
           { text: '创造者与管理者的时间表', link: '/translations/makersschedule/' },
