@@ -196,6 +196,7 @@ export default defineConfig({
       {
         text: '译文',
         items: [
+          { text: '四炉灶理论：工作与生活平衡的真相', link: '/translations/four-burners-theory/' },
           { text: '甘愿显得愚蠢', link: '/translations/look-stupid/' },
           { text: '如何反驳（反驳金字塔）', link: '/translations/disagree/' },
           { text: '如何制定真正有效的设计原则', link: '/translations/developing-design-principles/' },
