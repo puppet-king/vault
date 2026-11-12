@@ -203,6 +203,11 @@
   border-color: var(--vp-c-brand-1);
 }
 
+/* 搜索弹窗：隐藏右侧删除(清空)图标 */
+.VPLocalSearchBox .search-actions .clear-button {
+  display: none !important;
+}
+
 /* 听全文音频条（未播放时随页面自然滚走；仅在播放中且滚出首屏时固定在右下角，尺寸恒定不变形） */
 .vp-audio-slot {
   min-height: 46px;
