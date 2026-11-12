@@ -33,6 +33,8 @@ It may seem as if there are a lot of different situations with
 superlinear returns, but as far as I can tell they reduce to two
 fundamental causes: exponential growth and thresholds.
 
+![Superlinear Returns Infographic](/images/superlinear/superlinear.webp)
+
 The most obvious case of superlinear returns is when you're working
 on something that grows exponentially. For example, growing bacterial
 cultures. When they grow at all, they grow exponentially. But they're

@@ -196,6 +196,7 @@ export default defineConfig({
       {
         text: '译文',
         items: [
+          { text: '超线性回报', link: '/translations/superlinear/' },
           { text: '花钱的艺术与科学', link: '/translations/spending-money/' },
           { text: '四炉灶理论：工作与生活平衡的真相', link: '/translations/four-burners-theory/' },
           { text: '甘愿显得愚蠢', link: '/translations/look-stupid/' },
@@ -226,7 +227,6 @@ export default defineConfig({
           { text: '用间隔重复记住编程语言', link: '/translations/srs/' },
           { text: '品牌时代', link: '/translations/brandage/' },
           { text: '何时去做自己热爱的事', link: '/translations/when/' },
-          { text: '超线性回报', link: '/translations/superlinear/' },
           { text: '如何亏掉时间与金钱', link: '/translations/selfindulgence/' }
         ]
       },
