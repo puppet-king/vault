@@ -8,10 +8,13 @@ import { data as posts } from './.vitepress/theme/posts.data.mjs'
 import { works } from './.vitepress/theme/works.mjs'
 
 const activeTag = ref('')
+const currentPage = ref(1)
+const pageSize = 10
 const isExpanded = ref(false)
 const maxVisibleCount = ref(8)
 const measureContainerRef = ref(null)
 const measureBtnRefs = ref([])
+const postListHeadingRef = ref(null)
 
 const allTags = computed(() => {
   const counts = {}
@@ -34,6 +37,31 @@ const visibleTags = computed(() =>
 const filteredPosts = computed(() =>
   activeTag.value ? posts.filter(p => p.tags.includes(activeTag.value)) : posts
 )
+
+const totalPages = computed(() => Math.max(1, Math.ceil(filteredPosts.value.length / pageSize)))
+
+const paginatedPosts = computed(() => {
+  const start = (currentPage.value - 1) * pageSize
+  return filteredPosts.value.slice(start, start + pageSize)
+})
+
+function setTag(tag) {
+  activeTag.value = tag
+  currentPage.value = 1
+}
+
+function goToPage(page) {
+  if (page < 1 || page > totalPages.value || page === currentPage.value) return
+  currentPage.value = page
+  nextTick(() => {
+    if (postListHeadingRef.value) {
+      const top = postListHeadingRef.value.getBoundingClientRect().top + window.scrollY - 80
+      if (window.scrollY > top) {
+        window.scrollTo({ top, behavior: 'smooth' })
+      }
+    }
+  })
+}
 
 function measureTwoRows() {
   const container = measureContainerRef.value
@@ -81,6 +109,7 @@ function measureTwoRows() {
 
 function selectTagFromPost(tag) {
   activeTag.value = tag
+  currentPage.value = 1
   const idx = allTags.value.findIndex(t => t.name === tag)
   if (idx >= maxVisibleCount.value) {
     isExpanded.value = true
@@ -125,7 +154,7 @@ onBeforeUnmount(() => {
   <!-- 实际展示的标签栏 -->
   <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
     <button
-      @click="activeTag = ''"
+      @click="setTag('')"
       :style="{
         padding: '0.2rem 0.65rem',
         borderRadius: '999px',
@@ -142,7 +171,7 @@ onBeforeUnmount(() => {
     <button
       v-for="tag in visibleTags"
       :key="tag.name"
-      @click="activeTag = activeTag === tag.name ? '' : tag.name"
+      @click="setTag(activeTag === tag.name ? '' : tag.name)"
       :style="{
         padding: '0.2rem 0.65rem',
         borderRadius: '999px',
@@ -176,10 +205,10 @@ onBeforeUnmount(() => {
   </div>
 </div>
 
-## 文章列表
+<h2 ref="postListHeadingRef" id="文章列表">文章列表</h2>
 
 <ul>
-  <li v-for="post in filteredPosts" :key="post.url" style="margin-bottom: 1.25em;">
+  <li v-for="post in paginatedPosts" :key="post.url" style="margin-bottom: 1.25em;">
     <a :href="post.url" style="font-weight: 600;">{{ post.title }}</a>
     <span style="color: var(--vp-c-text-3); font-size: 0.82em; margin-left: 0.6em;">
       {{ post.words }} 字 · 约 {{ post.readingTime }} 分钟
@@ -195,6 +224,68 @@ onBeforeUnmount(() => {
     <p v-if="post.description" style="margin: 0.25em 0 0; color: var(--vp-c-text-2); font-size: 0.92em;">{{ post.description }}</p>
   </li>
 </ul>
+
+<div
+  v-if="totalPages > 1"
+  style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; margin: 1.5rem 0 2rem; padding-top: 0.75rem; border-top: 1px solid var(--vp-c-divider);"
+>
+  <span style="font-size: 0.85rem; color: var(--vp-c-text-3);">
+    第 {{ currentPage }} / {{ totalPages }} 页 · 共 {{ filteredPosts.length }} 篇
+  </span>
+  <div style="display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;">
+    <button
+      @click="goToPage(currentPage - 1)"
+      :disabled="currentPage === 1"
+      :style="{
+        padding: '0.28rem 0.7rem',
+        borderRadius: '6px',
+        fontSize: '0.85rem',
+        cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+        opacity: currentPage === 1 ? 0.45 : 1,
+        border: '1px solid var(--vp-c-divider)',
+        background: 'var(--vp-c-bg-soft)',
+        color: 'var(--vp-c-text-1)'
+      }"
+    >
+      上一页
+    </button>
+    <button
+      v-for="page in totalPages"
+      :key="page"
+      @click="goToPage(page)"
+      :style="{
+        minWidth: '2rem',
+        height: '2rem',
+        padding: '0 0.5rem',
+        borderRadius: '6px',
+        fontSize: '0.85rem',
+        fontWeight: currentPage === page ? 600 : 400,
+        cursor: 'pointer',
+        border: '1px solid var(--vp-c-divider)',
+        background: currentPage === page ? 'var(--vp-c-brand-1)' : 'var(--vp-c-bg-soft)',
+        color: currentPage === page ? '#fff' : 'var(--vp-c-text-1)'
+      }"
+    >
+      {{ page }}
+    </button>
+    <button
+      @click="goToPage(currentPage + 1)"
+      :disabled="currentPage === totalPages"
+      :style="{
+        padding: '0.28rem 0.7rem',
+        borderRadius: '6px',
+        fontSize: '0.85rem',
+        cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+        opacity: currentPage === totalPages ? 0.45 : 1,
+        border: '1px solid var(--vp-c-divider)',
+        background: 'var(--vp-c-bg-soft)',
+        color: 'var(--vp-c-text-1)'
+      }"
+    >
+      下一页
+    </button>
+  </div>
+</div>
 
 ## 我的作品
 
