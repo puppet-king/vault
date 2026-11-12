@@ -23,8 +23,11 @@ const allTags = computed(() => {
       counts[tag] = (counts[tag] || 0) + 1
     }
   }
-  return Object.entries(counts)
-    .map(([name, count]) => ({ name, count }))
+  const entries = Object.entries(counts).map(([name, count]) => ({ name, count }))
+  if (!entries.length) return []
+  const avgCount = entries.reduce((sum, item) => sum + item.count, 0) / entries.length
+  return entries
+    .filter(item => item.count > avgCount || item.name === activeTag.value)
     .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name, 'zh-CN'))
 })
 
@@ -48,6 +51,9 @@ const paginatedPosts = computed(() => {
 function setTag(tag) {
   activeTag.value = tag
   currentPage.value = 1
+  nextTick(() => {
+    measureTwoRows()
+  })
 }
 
 function goToPage(page) {
@@ -65,8 +71,8 @@ function goToPage(page) {
 
 function measureTwoRows() {
   const container = measureContainerRef.value
-  const btns = measureBtnRefs.value
-  if (!container || !btns || !btns.length) return
+  const btns = (measureBtnRefs.value || []).slice(0, allTags.value.length)
+  if (!container || !btns.length) return
 
   const containerWidth = container.clientWidth
   if (!containerWidth) return
@@ -110,10 +116,13 @@ function measureTwoRows() {
 function selectTagFromPost(tag) {
   activeTag.value = tag
   currentPage.value = 1
-  const idx = allTags.value.findIndex(t => t.name === tag)
-  if (idx >= maxVisibleCount.value) {
-    isExpanded.value = true
-  }
+  nextTick(() => {
+    measureTwoRows()
+    const idx = allTags.value.findIndex(t => t.name === tag)
+    if (idx >= maxVisibleCount.value) {
+      isExpanded.value = true
+    }
+  })
 }
 
 onMounted(() => {
@@ -227,64 +236,59 @@ onBeforeUnmount(() => {
 
 <div
   v-if="totalPages > 1"
-  style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; margin: 1.5rem 0 2rem; padding-top: 0.75rem; border-top: 1px solid var(--vp-c-divider);"
+  style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 0.4rem; margin: 1.5rem 0 2rem; padding-top: 0.75rem; border-top: 1px solid var(--vp-c-divider);"
 >
-  <span style="font-size: 0.85rem; color: var(--vp-c-text-3);">
-    第 {{ currentPage }} / {{ totalPages }} 页 · 共 {{ filteredPosts.length }} 篇
-  </span>
-  <div style="display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;">
-    <button
-      @click="goToPage(currentPage - 1)"
-      :disabled="currentPage === 1"
-      :style="{
-        padding: '0.28rem 0.7rem',
-        borderRadius: '6px',
-        fontSize: '0.85rem',
-        cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
-        opacity: currentPage === 1 ? 0.45 : 1,
-        border: '1px solid var(--vp-c-divider)',
-        background: 'var(--vp-c-bg-soft)',
-        color: 'var(--vp-c-text-1)'
-      }"
-    >
-      上一页
-    </button>
-    <button
-      v-for="page in totalPages"
-      :key="page"
-      @click="goToPage(page)"
-      :style="{
-        minWidth: '2rem',
-        height: '2rem',
-        padding: '0 0.5rem',
-        borderRadius: '6px',
-        fontSize: '0.85rem',
-        fontWeight: currentPage === page ? 600 : 400,
-        cursor: 'pointer',
-        border: '1px solid var(--vp-c-divider)',
-        background: currentPage === page ? 'var(--vp-c-brand-1)' : 'var(--vp-c-bg-soft)',
-        color: currentPage === page ? '#fff' : 'var(--vp-c-text-1)'
-      }"
-    >
-      {{ page }}
-    </button>
-    <button
-      @click="goToPage(currentPage + 1)"
-      :disabled="currentPage === totalPages"
-      :style="{
-        padding: '0.28rem 0.7rem',
-        borderRadius: '6px',
-        fontSize: '0.85rem',
-        cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
-        opacity: currentPage === totalPages ? 0.45 : 1,
-        border: '1px solid var(--vp-c-divider)',
-        background: 'var(--vp-c-bg-soft)',
-        color: 'var(--vp-c-text-1)'
-      }"
-    >
-      下一页
-    </button>
-  </div>
+  <button
+    @click="goToPage(currentPage - 1)"
+    :disabled="currentPage === 1"
+    :style="{
+      padding: '0.28rem 0.7rem',
+      borderRadius: '6px',
+      fontSize: '0.85rem',
+      cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+      opacity: currentPage === 1 ? 0.45 : 1,
+      border: '1px solid var(--vp-c-divider)',
+      background: 'var(--vp-c-bg-soft)',
+      color: 'var(--vp-c-text-1)'
+    }"
+  >
+    上一页
+  </button>
+  <button
+    v-for="page in totalPages"
+    :key="page"
+    @click="goToPage(page)"
+    :style="{
+      minWidth: '2rem',
+      height: '2rem',
+      padding: '0 0.5rem',
+      borderRadius: '6px',
+      fontSize: '0.85rem',
+      fontWeight: currentPage === page ? 600 : 400,
+      cursor: 'pointer',
+      border: '1px solid var(--vp-c-divider)',
+      background: currentPage === page ? 'var(--vp-c-brand-1)' : 'var(--vp-c-bg-soft)',
+      color: currentPage === page ? '#fff' : 'var(--vp-c-text-1)'
+    }"
+  >
+    {{ page }}
+  </button>
+  <button
+    @click="goToPage(currentPage + 1)"
+    :disabled="currentPage === totalPages"
+    :style="{
+      padding: '0.28rem 0.7rem',
+      borderRadius: '6px',
+      fontSize: '0.85rem',
+      cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+      opacity: currentPage === totalPages ? 0.45 : 1,
+      border: '1px solid var(--vp-c-divider)',
+      background: 'var(--vp-c-bg-soft)',
+      color: 'var(--vp-c-text-1)'
+    }"
+  >
+    下一页
+  </button>
 </div>
 
 ## 我的作品
