@@ -1,5 +1,10 @@
-html {
-  scrollbar-gutter: stable;
+/* 搜索等弹窗锁定 body 滚动时，动态补偿滚动条宽度，防止页面晃动且不留右侧白边 */
+body[style*="overflow: hidden"] {
+  padding-right: var(--vp-scrollbar-width, 0px) !important;
+}
+
+body[style*="overflow: hidden"] .VPNav {
+  padding-right: var(--vp-scrollbar-width, 0px) !important;
 }
 
 .VPDoc.has-aside .content-container,

@@ -27,8 +27,17 @@ export default {
     let currentAudio = null;
     let audioObserver = null;
 
+    const syncScrollbarWidth = () => {
+      if (document.body.style.overflow === 'hidden') return;
+      const sw = Math.max(0, window.innerWidth - document.documentElement.clientWidth);
+      document.documentElement.style.setProperty('--vp-scrollbar-width', `${sw}px`);
+    };
+
     const setupProgressAndPreview = () => {
       if (document.querySelector('.vp-reading-progress')) return;
+
+      syncScrollbarWidth();
+      window.addEventListener('resize', syncScrollbarWidth, { passive: true });
 
       // 1. 顶部阅读进度条
       const bar = document.createElement('div');
@@ -321,6 +330,8 @@ export default {
           block.appendChild(btn);
         }
       }
+
+      syncScrollbarWidth();
     };
 
     onMounted(applyEnhance);
