@@ -196,6 +196,7 @@ export default defineConfig({
       {
         text: '译文',
         items: [
+          { text: '如何努力工作', link: '/translations/hwh/' },
           { text: '如何独立思考', link: '/translations/think/' },
           { text: '创始人模式（Founder Mode）', link: '/translations/foundermode/' },
           { text: '超线性回报', link: '/translations/superlinear/' },
