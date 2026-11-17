@@ -196,6 +196,7 @@ export default defineConfig({
       {
         text: '译文',
         items: [
+          { text: '也许没必要做“软删除”', link: '/translations/soft-deletion/' },
           { text: '循证排期法（EBS）', link: '/translations/ebs/' },
           { text: '超越聪明（Beyond Smart）', link: '/translations/smart/' },
           { text: '真挚的力量（Earnestness）', link: '/translations/earnest/' },
