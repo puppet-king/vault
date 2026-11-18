@@ -63,7 +63,7 @@ Bug databases can be complicated or simple. A minimal useful bug database must i
 
 If the complexity of bug tracking software is the only thing stopping you from tracking your bugs, just make a simple 5 column table with these crucial fields and *start using it*.
 
-For more on bug tracking, read [Painless Bug Tracking](https://www.joelonsoftware.com/articles/fog0000000029.html).
+For more on bug tracking, read [Painless Bug Tracking](/translations/painless-bug-tracking/).
 
 ## 5. Do you fix bugs before writing new code?
 

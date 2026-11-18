@@ -73,7 +73,7 @@ description: "Stack Overflow 联合创始人乔尔·斯波尔斯基（Joel Spols
 
 如果仅仅是因为嫌弃市面上那些缺陷管理软件太繁琐，才导致你迟迟没有追踪 Bug，那你哪怕立刻拉一张只有这 5 列的简单表格，也请*马上用起来*。
 
-关于缺陷跟踪的更多实践，请阅读《[无痛缺陷跟踪指南](https://www.joelonsoftware.com/articles/fog0000000029.html)》。
+关于缺陷跟踪的更多实践，请阅读《[无痛缺陷跟踪指南](/translations/painless-bug-tracking/)》。
 
 ## 5. 你们会在写新代码之前先修完已知的 Bug 吗？
 
