@@ -196,6 +196,7 @@ export default defineConfig({
       {
         text: '译文',
         items: [
+          { text: '早期作品（Early Work）', link: '/translations/early/' },
           { text: '无痛缺陷跟踪指南', link: '/translations/painless-bug-tracking/' },
           { text: '创业最难学会的七条铁律', link: '/translations/startuplessons/' },
           { text: '也许没必要做“软删除”', link: '/translations/soft-deletion/' },
