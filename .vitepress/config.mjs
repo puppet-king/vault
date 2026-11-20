@@ -197,6 +197,8 @@ export default defineConfig({
       {
         text: '译文',
         items: [
+          { text: '如何赚到十亿美元（How to Earn a Billion Dollars）', link: '/translations/earn/' },
+          { text: '为什么必须阅读（The Need to Read）', link: '/translations/read/' },
           { text: '早期作品（Early Work）', link: '/translations/early/' },
           { text: '无痛缺陷跟踪指南', link: '/translations/painless-bug-tracking/' },
           { text: '创业最难学会的七条铁律', link: '/translations/startuplessons/' },
