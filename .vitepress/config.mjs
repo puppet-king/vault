@@ -197,6 +197,7 @@ export default defineConfig({
       {
         text: '译文',
         items: [
+          { text: '7 个实用的 UI 动效技巧', link: '/translations/7-practical-animation-tips/' },
           { text: '如何赚到十亿美元（How to Earn a Billion Dollars）', link: '/translations/earn/' },
           { text: '为什么必须阅读（The Need to Read）', link: '/translations/read/' },
           { text: '早期作品（Early Work）', link: '/translations/early/' },
