@@ -197,6 +197,7 @@ export default defineConfig({
       {
         text: '译文',
         items: [
+          { text: '走自己的路（Do It Your Way）', link: '/translations/your-way-is-the-only-way/' },
           { text: '随笔的引力场（The Shape of the Essay Field）', link: '/translations/field/' },
           { text: '拥有一个自己的项目（A Project of One\'s Own）', link: '/translations/own/' },
           { text: '7 个实用的 UI 动效技巧', link: '/translations/7-practical-animation-tips/' },
