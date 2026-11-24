@@ -197,6 +197,7 @@ export default defineConfig({
       {
         text: '译文',
         items: [
+          { text: '我有几个问题（I Have A Few Questions）', link: '/translations/i-have-a-few-questions/' },
           { text: '该做什么（What to Do）', link: '/translations/do/' },
           { text: '开发抽象层（The Development Abstraction Layer）', link: '/translations/the-development-abstraction-layer/' },
           { text: '走自己的路（Do It Your Way）', link: '/translations/your-way-is-the-only-way/' },
