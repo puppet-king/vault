@@ -8,7 +8,7 @@ description: "《金钱心理学》作者摩根·豪泽尔（Morgan Housel）短
 
 # 走自己的路（Do It Your Way）
 
-> 原文：[Do It Your Way](https://collabfund.com/blog/your-way-is-the-only-way/) · 作者：Morgan Housel · 发布时间：2024 年 9 月 23 日 · [阅读英文原版](./en.md)
+> 原文：[Do It Your Way](https://collabfund.com/blog/your-way-is-the-only-way/) · 作者：Morgan Housel · 发布时间：2024 年 9 月 23 日
 
 ![走自己的路](/images/your-way-is-the-only-way/your-way-is-the-only-way.webp)
 
