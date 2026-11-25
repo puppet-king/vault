@@ -197,6 +197,7 @@ export default defineConfig({
       {
         text: '译文',
         items: [
+          { text: '如何创办谷歌（How to Start Google）', link: '/translations/google/' },
           { text: '不能说的话（What You Can\'t Say）', link: '/translations/say/' },
           { text: '我有几个问题（I Have A Few Questions）', link: '/translations/i-have-a-few-questions/' },
           { text: '该做什么（What to Do）', link: '/translations/do/' },
