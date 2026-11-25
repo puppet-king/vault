@@ -197,6 +197,7 @@ export default defineConfig({
       {
         text: '译文',
         items: [
+          { text: '帕默斯顿勋爵论编程', link: '/translations/lord-palmerston-on-programming/' },
           { text: '表单报错的 10 条设计指南', link: '/translations/errors-forms-design-guidelines/' },
           { text: '如何创办谷歌（How to Start Google）', link: '/translations/google/' },
           { text: '不能说的话（What You Can\'t Say）', link: '/translations/say/' },
