@@ -197,6 +197,7 @@ export default defineConfig({
       {
         text: '译文',
         items: [
+          { text: '没有什么事像看起来那么简单', link: '/translations/nothing-is-as-simple-as-it-seems/' },
           { text: '只是个普通小兵，怎么把事做成', link: '/translations/getting-things-done-when-youre-only-a-grunt/' },
           { text: '来自过去的来信：关于怀旧', link: '/translations/thoughts-on-nostalgia/' },
           { text: '帕默斯顿勋爵论编程', link: '/translations/lord-palmerston-on-programming/' },
