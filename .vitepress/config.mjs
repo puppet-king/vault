@@ -197,6 +197,7 @@ export default defineConfig({
       {
         text: '译文',
         items: [
+          { text: '只是个普通小兵，怎么把事做成', link: '/translations/getting-things-done-when-youre-only-a-grunt/' },
           { text: '来自过去的来信：关于怀旧', link: '/translations/thoughts-on-nostalgia/' },
           { text: '帕默斯顿勋爵论编程', link: '/translations/lord-palmerston-on-programming/' },
           { text: '表单报错的 10 条设计指南', link: '/translations/errors-forms-design-guidelines/' },
