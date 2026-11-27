@@ -126,7 +126,7 @@ export default defineConfig({
   lang: 'zh-CN',
   title: SITE_TITLE,
   description: '个人博客 · 随笔与译文',
-  srcExclude: ['README.md', 'README-zh.md', '.agent/**', '.agents/**'],
+  srcExclude: ['README.md', 'README-zh.md', '.agent/**', '.agents/**', 'drafts/**'],
   lastUpdated: true,
   head: [
     ['link', { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
@@ -190,6 +190,7 @@ export default defineConfig({
       {
         text: '随笔',
         items: [
+          { text: '为什么技术总爱走回头路', link: '/posts/vdom-and-vapor-mode/' },
           { text: '如何写好一个提示词', link: '/posts/how-to-write-prompts/' },
           { text: 'CSS 动画缓动曲线指南', link: '/posts/css-easing/' }
         ]
