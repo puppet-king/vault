@@ -10,7 +10,7 @@ The same is true for investors. It's not enough for a public market investor to 
 
 You see this pattern with startup founders too. You don't want to start a startup to do something that everyone agrees is a good idea, or there will already be other companies doing it. You have to do something that sounds to most other people like a bad idea, but that you know isn't — like writing software for a tiny computer used by a few thousand hobbyists, or starting a site to let people rent airbeds on strangers' floors.
 
-Ditto for essayists. An essay that told people things they already knew would be boring. You have to tell them something [new](https://www.paulgraham.com/useful.html).
+Ditto for essayists. An essay that told people things they already knew would be boring. You have to tell them something [new](/translations/useful/).
 
 But this pattern isn't universal. In fact, it doesn't hold for most kinds of work. In most kinds of work — to be an administrator, for example — all you need is the first half. All you need is to be right. It's not essential that everyone else be wrong.
 

@@ -197,6 +197,7 @@ export default defineConfig({
       {
         text: '译文',
         items: [
+          { text: '如何写出有用的文章', link: '/translations/useful/' },
           { text: '对其他一切说“不”', link: '/translations/no2/' },
           { text: '没有什么事像看起来那么简单', link: '/translations/nothing-is-as-simple-as-it-seems/' },
           { text: '只是个普通小兵，怎么把事做成', link: '/translations/getting-things-done-when-youre-only-a-grunt/' },
